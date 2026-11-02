@@ -38,7 +38,7 @@
 body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.7}
 .wrap{max-width:1180px;margin:0 auto;padding-block:20px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
 h1,h2,h3{text-wrap:balance;margin:0}
-button,select,input{font:inherit}
+button,select,input,textarea{font:inherit}
 :focus-visible{outline:2px solid var(--teal);outline-offset:2px}
 mark{background:linear-gradient(transparent 35%,var(--marker) 35%,var(--marker) 88%,transparent 88%);color:inherit;padding:0 2px}
 
@@ -61,7 +61,7 @@ header.top{display:flex;align-items:center;justify-content:space-between;gap:16p
 .drop span{font-size:13px;color:var(--ink-2)}
 .drop input{display:none}
 .docname{font-weight:600;word-break:break-word}
-.badge{display:inline-block;font-size:12px;padding:1px 8px;border-radius:99px;background:var(--marker);color:var(--marker-ink);font-weight:600;margin-inline-start:6px;vertical-align:middle}
+.badge{display:inline-block;font-size:12px;padding:1px 8px;border-radius:99px;background:var(--marker);color:var(--marker-ink);font-weight:600;margin-inline-start:6px;vertical-align:middle;font-family:var(--body)}
 .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .stat{background:var(--paper);border-radius:8px;padding:8px;text-align:center}
 .stat b{display:block;font-family:var(--mono);font-size:18px;font-variant-numeric:tabular-nums}
@@ -72,10 +72,12 @@ header.top{display:flex;align-items:center;justify-content:space-between;gap:16p
 .pages i:hover{opacity:1}
 .ctrls{display:grid;gap:10px}
 .ctrls label{display:grid;gap:4px;font-size:13px;color:var(--ink-2)}
+.qbtns{display:grid;gap:6px}
 select{background:var(--paper);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:6px 8px}
 .btn{border:0;border-radius:8px;padding:9px 14px;cursor:pointer;background:var(--teal);color:var(--sheet);font-weight:600}
 .btn:disabled{opacity:.5;cursor:not-allowed}
 .btn.ghost{background:transparent;color:var(--teal);border:1px solid var(--line)}
+.btn.ghost:hover:not(:disabled){border-color:var(--teal)}
 .btn.small{padding:5px 10px;font-size:13px}
 .status{font-size:13px;color:var(--ink-2);min-height:1.4em}
 .status.err{color:var(--bad)}
@@ -88,32 +90,58 @@ select{background:var(--paper);color:var(--ink);border:1px solid var(--line);bor
 .tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--marker)}
 .view{display:flex;flex-direction:column;gap:16px}
 .card{padding:18px 20px;min-width:0}
-.card h2{font-family:var(--display);font-size:20px;font-weight:500;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.card h2{font-family:var(--display);font-size:20px;font-weight:500;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
 .card h3{font-size:16px;margin-bottom:6px}
-.summary{font-size:16.5px;max-width:68ch;margin:0}
-.points{margin:0;padding-inline-start:20px;display:grid;gap:6px;max-width:72ch}
+.summary{font-size:16px;max-width:70ch;margin:0;color:var(--ink-2)}
 .two{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+
+/* visual summary */
+.hero{padding:22px 22px 20px;background:var(--ink);color:var(--sheet);border-radius:var(--r);display:grid;gap:10px}
+.hero .eyebrow{font-size:12px;letter-spacing:.04em;opacity:.75;font-weight:600}
+.hero h2{font-family:var(--display);font-size:26px;font-weight:700;line-height:1.35}
+.hero .gist{font-size:17px;max-width:62ch;margin:0}
+.hero .gist mark{color:var(--marker-ink)}
+.hero .meta{display:flex;gap:18px;flex-wrap:wrap;font-family:var(--mono);font-size:13px;opacity:.85}
+.kpgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px}
+.kp{border:1px solid var(--line);border-radius:var(--r);padding:14px;display:grid;gap:6px;align-content:start;background:var(--sheet);border-top:4px solid var(--c)}
+.kp .ic{width:30px;height:30px;border-radius:50%;background:var(--c);color:var(--sheet);display:grid;place-items:center;font-family:var(--mono);font-weight:600;font-size:14px}
+.kp b{font-size:15.5px}
+.kp span{font-size:14px;color:var(--ink-2)}
+.donutwrap{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.donut{width:170px;height:170px;flex:none}
+.donut text{fill:var(--ink);font-family:var(--mono)}
+.legend{display:grid;gap:8px;flex:1;min-width:180px;margin:0;padding:0;list-style:none}
+.legend li{display:grid;grid-template-columns:12px minmax(0,1fr) auto;gap:8px;align-items:center;font-size:14px}
+.legend i{width:12px;height:12px;border-radius:3px;background:var(--c)}
+.legend em{font-style:normal;font-family:var(--mono);color:var(--ink-2);font-size:13px;font-variant-numeric:tabular-nums}
+.heat{overflow-x:auto}
+.heat table{border-collapse:separate;border-spacing:3px;font-size:13px}
+.heat th{font-weight:500;color:var(--ink-2);text-align:start;white-space:nowrap;padding-inline-end:8px;max-width:180px;overflow:hidden;text-overflow:ellipsis}
+.heat thead th{font-family:var(--mono);font-size:11px;text-align:center;padding:0}
+.heat td{width:22px;height:20px;border-radius:4px;background:var(--paper)}
+.heat td.on{background:var(--c)}
 .bars{display:grid;gap:8px}
 .bar{display:grid;grid-template-columns:minmax(80px,140px) minmax(0,1fr) 40px;align-items:center;gap:10px;font-size:14px}
 .bar .t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .bar .track{height:12px;background:var(--paper);border-radius:6px;overflow:hidden}
 .bar .fill{height:100%;background:var(--teal);border-radius:6px}
 .bar .n{font-family:var(--mono);font-size:13px;color:var(--ink-2);font-variant-numeric:tabular-nums;text-align:end}
-.pchips{display:flex;gap:4px;flex-wrap:wrap;margin-top:2px}
-.pchip{font-family:var(--mono);font-size:11px;border:1px solid var(--line);border-radius:4px;padding:0 5px;color:var(--ink-2)}
-dl.terms{margin:0;display:grid;gap:10px}
-dl.terms dt{font-weight:700}
-dl.terms dd{margin:0;color:var(--ink-2)}
 .nums{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
 .num{background:var(--paper);border-radius:8px;padding:12px}
-.num b{display:block;font-family:var(--mono);font-size:22px;color:var(--teal);font-variant-numeric:tabular-nums}
+.num b{display:block;font-family:var(--mono);font-size:24px;color:var(--teal);font-variant-numeric:tabular-nums}
 .num span{font-size:13px;color:var(--ink-2)}
+.flash{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.fc{min-height:110px;border:1px solid var(--line);border-radius:var(--r);background:var(--paper);cursor:pointer;padding:14px;text-align:center;display:grid;place-items:center;color:var(--ink);transition:background .15s}
+.fc b{font-size:16px}
+.fc small{display:block;color:var(--ink-2);font-size:12px;margin-top:4px}
+.fc.open{background:var(--teal-soft);text-align:start}
+.fc.open span{font-size:14px}
 
 /* mind map */
 .mm{display:flex;flex-direction:column;align-items:center;gap:0}
 .mm-center{background:var(--ink);color:var(--sheet);font-family:var(--display);font-size:19px;padding:12px 22px;border-radius:12px;text-align:center;max-width:90%}
 .mm-stem{width:2px;height:22px;background:var(--line)}
-.mm-branches{width:100%;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;border-top:2px solid var(--line);padding-top:22px;position:relative}
+.mm-branches{width:100%;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;border-top:2px solid var(--line);padding-top:22px}
 .mm-b{position:relative;border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;background:var(--sheet);min-width:0}
 .mm-b::before{content:"";position:absolute;top:-23px;inset-inline-start:50%;width:2px;height:22px;background:var(--line)}
 .mm-b h3{color:var(--c);font-size:16px;padding-bottom:6px;border-bottom:3px solid var(--c);margin-bottom:8px}
@@ -123,22 +151,34 @@ dl.terms dd{margin:0;color:var(--ink-2)}
 .step b{font-family:var(--mono);color:var(--teal)}
 .arrow{color:var(--ink-2)}
 
-/* quiz */
+/* questions */
+.seg{display:flex;gap:4px;background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:4px;flex-wrap:wrap}
+.seg button{flex:1;min-width:110px;border:0;background:transparent;border-radius:7px;padding:8px 10px;cursor:pointer;color:var(--ink-2);font-weight:600}
+.seg button[aria-pressed="true"]{background:var(--sheet);color:var(--ink);box-shadow:0 1px 2px rgb(0 0 0 / .08)}
+.seg small{font-family:var(--mono);font-weight:400;margin-inline-start:4px}
 .qhead{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
-.score{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:15px}
+.qtools{display:flex;gap:8px;flex-wrap:wrap}
+.score{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:15px;margin-top:8px}
 .scorebar{height:8px;background:var(--paper);border-radius:8px;overflow:hidden;display:flex;margin-top:8px}
 .scorebar .g{background:var(--good)} .scorebar .x{background:var(--bad)}
 .q{padding:16px 20px}
 .q .qn{font-family:var(--mono);font-size:12px;color:var(--ink-2)}
 .q p.qt{font-weight:600;font-size:16px;margin:2px 0 10px}
 .opts{display:grid;gap:8px}
+.opts.tf{grid-template-columns:1fr 1fr}
 .opt{display:flex;gap:10px;align-items:flex-start;text-align:start;background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:9px 12px;cursor:pointer;color:var(--ink)}
+.opts.tf .opt{justify-content:center;font-weight:600}
 .opt:hover:not(:disabled){border-color:var(--teal)}
 .opt:disabled{cursor:default}
 .opt .k{font-family:var(--mono);font-weight:600;color:var(--ink-2);min-width:1.2em}
 .opt.right{background:var(--good-soft);border-color:var(--good)}
 .opt.wrong{background:var(--bad-soft);border-color:var(--bad)}
 .explain{margin-top:10px;font-size:14px;color:var(--ink-2);border-inline-start:3px solid var(--marker);padding-inline-start:10px}
+.essay textarea{width:100%;min-height:90px;resize:vertical;border:1px solid var(--line);border-radius:8px;padding:10px;background:var(--paper);color:var(--ink)}
+.model{margin-top:10px;background:var(--teal-soft);border-radius:8px;padding:12px 14px;display:grid;gap:8px}
+.model ul{margin:0;padding-inline-start:20px;display:grid;gap:3px}
+.model .lbl{margin:0}
+.marks{font-family:var(--mono);font-size:12px;border:1px solid var(--line);border-radius:4px;padding:0 6px;color:var(--ink-2);margin-inline-start:6px}
 
 .reader{display:flex;flex-direction:column;gap:10px}
 .reader .pg{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
@@ -152,7 +192,7 @@ dl.terms dd{margin:0;color:var(--ink-2)}
   <header class="top">
     <div class="brand">
       <h1>مُذاكِر PDF</h1>
-      <p>ارفع ملفك، واحصل على ملخص وخريطة ذهنية وأسئلة اختيار من متعدد.</p>
+      <p>ارفع ملفك، واحصل على ملخص رسومي وخريطة ذهنية وأسئلة متوقعة.</p>
     </div>
     <div class="engine"><span class="dot" id="engDot"></span><span id="engTxt">جارٍ التحقق من Claude…</span></div>
   </header>
@@ -185,22 +225,26 @@ dl.terms dd{margin:0;color:var(--ink-2)}
         <label for="lang">لغة النتائج
           <select id="lang"><option value="ar">العربية</option><option value="en">English</option></select>
         </label>
+        <button class="btn" id="btnAnalyze">حلّل المستند</button>
         <label for="qCount">عدد الأسئلة
           <select id="qCount"><option>5</option><option selected>10</option><option>15</option><option>20</option></select>
         </label>
         <label for="qLevel">مستوى الصعوبة
           <select id="qLevel"><option value="easy">سهل</option><option value="medium" selected>متوسط</option><option value="hard">صعب</option></select>
         </label>
-        <button class="btn" id="btnAnalyze">حلّل المستند</button>
-        <button class="btn ghost" id="btnQuiz">أنشئ الأسئلة</button>
+        <div class="qbtns">
+          <button class="btn ghost" id="btnMcq" data-type="mcq">أسئلة اختيار من متعدد</button>
+          <button class="btn ghost" id="btnTf" data-type="tf">أسئلة صح أو خطأ</button>
+          <button class="btn ghost" id="btnEssay" data-type="essay">أسئلة مقالية متوقعة</button>
+        </div>
         <p class="note" id="engNote"></p>
       </div>
     </aside>
 
     <main class="main">
       <div class="tabs" role="tablist">
-        <button class="tab" role="tab" id="t-sum" aria-selected="true" data-v="v-sum">الملخص والتحليل</button>
-        <button class="tab" role="tab" id="t-map" aria-selected="false" data-v="v-map">التلخيص البصري</button>
+        <button class="tab" role="tab" id="t-sum" aria-selected="true" data-v="v-sum">الملخص الرسومي</button>
+        <button class="tab" role="tab" id="t-map" aria-selected="false" data-v="v-map">الخريطة الذهنية</button>
         <button class="tab" role="tab" id="t-quiz" aria-selected="false" data-v="v-quiz">الأسئلة</button>
         <button class="tab" role="tab" id="t-text" aria-selected="false" data-v="v-text">النص المستخرج</button>
       </div>
@@ -223,6 +267,9 @@ const $ = id => document.getElementById(id);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const fmt = n => Number(n).toLocaleString("ar-EG");
 const MAX_CHARS = 80000;
+const COLS = ["--b1","--b2","--b3","--b4","--b5","--b6"];
+const col = i => `var(${COLS[i%COLS.length]})`;
+const TYPES = {mcq:"اختيار من متعدد", tf:"صح أو خطأ", essay:"مقالي"};
 
 /* ---------- sample document (shown until the viewer uploads a file) ---------- */
 const SAMPLE_PAGES = [
@@ -233,15 +280,16 @@ const SAMPLE_PAGES = [
 ];
 const SAMPLE_ANALYSIS = {
   title:"اعتلال الشبكية السكري: المراحل والتشخيص والعلاج",
-  summary:"يتناول المستند اعتلال الشبكية السكري بوصفه السبب الرئيسي لفقدان البصر لدى البالغين في سن العمل، وينشأ عن تلف الأوعية الدقيقة في الشبكية بفعل ارتفاع السكر المزمن. يميّز بين المرحلة غير التكاثرية والمرحلة التكاثرية، ويعرض وسائل التشخيص من فحص قاع العين إلى OCT ونماذج التعلم العميق. ويختم بخيارات العلاج وأهمية الفحص السنوي في منع فقدان البصر.",
+  gist:"مرض يصيب أوعية الشبكية بسبب ارتفاع السكر المزمن، ويمكن منع معظم مضاعفاته بالفحص السنوي والعلاج المبكر.",
+  summary:"يتناول المستند اعتلال الشبكية السكري بوصفه السبب الرئيسي لفقدان البصر لدى البالغين في سن العمل، وينشأ عن تلف الأوعية الدقيقة في الشبكية بفعل ارتفاع السكر المزمن. يميّز بين المرحلة غير التكاثرية والمرحلة التكاثرية، ويعرض وسائل التشخيص من فحص قاع العين إلى OCT ونماذج التعلم العميق، ويختم بخيارات العلاج وأهمية الفحص السنوي.",
   key_points:[
-    "نحو ثلث مرضى السكري لديهم درجة من اعتلال الشبكية.",
-    "المرحلة التكاثرية أخطر لأنها تشمل نمو أوعية جديدة هشة قابلة للنزف.",
-    "التصوير المقطعي OCT يقيس سماكة البقعة ويكشف الوذمة.",
-    "نماذج التعلم العميق تجاوزت حساسيتها 90% في تصنيف صور قاع العين.",
-    "الاكتشاف المبكر يقلل خطر فقدان البصر الشديد حتى 95%."
+    {label:"انتشار واسع",text:"نحو ثلث مرضى السكري لديهم درجة من اعتلال الشبكية."},
+    {label:"المرحلة الأخطر",text:"المرحلة التكاثرية تشمل نمو أوعية جديدة هشة قابلة للنزف."},
+    {label:"قياس البقعة",text:"التصوير المقطعي OCT يقيس سماكة البقعة ويكشف الوذمة."},
+    {label:"الذكاء الاصطناعي",text:"نماذج التعلم العميق تجاوزت حساسيتها 90% في تصنيف صور قاع العين."},
+    {label:"قيمة الاكتشاف المبكر",text:"الاكتشاف المبكر يقلل خطر فقدان البصر الشديد حتى 95%."}
   ],
-  topics:[{name:"تعريف المرض وأسبابه",pages:[1],weight:3},{name:"مراحل المرض",pages:[2],weight:5},{name:"وسائل التشخيص والذكاء الاصطناعي",pages:[3],weight:4},{name:"العلاج والوقاية",pages:[4],weight:4}],
+  topics:[{name:"تعريف المرض وأسبابه",pages:[1],weight:3},{name:"مراحل المرض",pages:[2],weight:5},{name:"التشخيص والذكاء الاصطناعي",pages:[3],weight:4},{name:"العلاج والوقاية",pages:[4],weight:4}],
   mindmap:{center:"اعتلال الشبكية السكري",branches:[
     {label:"السبب",children:["ارتفاع السكر المزمن","تلف الأوعية الدقيقة"]},
     {label:"المراحل",children:["غير تكاثرية: تمددات ونزف نقطي","تكاثرية: أوعية جديدة هشة"]},
@@ -253,19 +301,31 @@ const SAMPLE_ANALYSIS = {
   numbers:[{value:"⅓",label:"من مرضى السكري مصابون بدرجة ما"},{value:"> 90%",label:"حساسية نماذج التعلم العميق"},{value:"95%",label:"انخفاض خطر فقدان البصر مع الاكتشاف المبكر"},{value:"1×",label:"فحص سنوي على الأقل"}],
   steps:["ارتفاع السكر المزمن","تلف الأوعية الدقيقة","تمددات ونزف (غير تكاثرية)","أوعية جديدة هشة (تكاثرية)","نزف زجاجي وانفصال الشبكية"]
 };
-const SAMPLE_QUIZ = [
-  {q:"ما السبب الرئيسي لاعتلال الشبكية السكري؟",options:["التهاب العصب البصري","تلف الأوعية الدقيقة في الشبكية بسبب ارتفاع السكر","ارتفاع ضغط العين","نقص فيتامين أ"],answer:1,explain:"ينتج المرض عن تلف الأوعية الدموية الدقيقة بفعل ارتفاع السكر لفترات طويلة.",page:1},
-  {q:"ما الذي يميز المرحلة التكاثرية؟",options:["الإفرازات الصلبة فقط","نمو أوعية دموية جديدة هشة","تمددات وعائية دقيقة فقط","غياب أي نزف"],answer:1,explain:"المرحلة التكاثرية تتميز بنمو أوعية جديدة هشة قد تنزف داخل الجسم الزجاجي.",page:2},
-  {q:"أي وسيلة تُستخدم لقياس سماكة البقعة؟",options:["تخطيط كهربية الشبكية","قياس حدة البصر","التصوير المقطعي البصري OCT","قياس ضغط العين"],answer:2,explain:"يستخدم OCT لقياس سماكة البقعة وكشف الوذمة.",page:3},
-  {q:"كم مرة يُوصى بفحص الشبكية لمرضى السكري؟",options:["مرة سنوياً على الأقل","كل خمس سنوات","عند ظهور الأعراض فقط","مرة واحدة عند التشخيص"],answer:0,explain:"يوصى بالفحص مرة سنوياً على الأقل لأن الاكتشاف المبكر يقلل الخطر حتى 95%.",page:4}
-];
+const SAMPLE_Q = {
+  mcq:[
+    {q:"ما السبب الرئيسي لاعتلال الشبكية السكري؟",options:["التهاب العصب البصري","تلف الأوعية الدقيقة في الشبكية بسبب ارتفاع السكر","ارتفاع ضغط العين","نقص فيتامين أ"],answer:1,explain:"ينتج المرض عن تلف الأوعية الدموية الدقيقة بفعل ارتفاع السكر لفترات طويلة.",page:1},
+    {q:"ما الذي يميز المرحلة التكاثرية؟",options:["الإفرازات الصلبة فقط","نمو أوعية دموية جديدة هشة","تمددات وعائية دقيقة فقط","غياب أي نزف"],answer:1,explain:"المرحلة التكاثرية تتميز بنمو أوعية جديدة هشة قد تنزف داخل الجسم الزجاجي.",page:2},
+    {q:"أي وسيلة تُستخدم لقياس سماكة البقعة؟",options:["تخطيط كهربية الشبكية","قياس حدة البصر","التصوير المقطعي البصري OCT","قياس ضغط العين"],answer:2,explain:"يستخدم OCT لقياس سماكة البقعة وكشف الوذمة.",page:3}
+  ],
+  tf:[
+    {s:"تظهر الأوعية الدموية الجديدة الهشة في المرحلة غير التكاثرية.",answer:false,explain:"خطأ؛ الأوعية الجديدة الهشة علامة المرحلة التكاثرية.",page:2},
+    {s:"يوصى بفحص الشبكية لمرضى السكري مرة سنوياً على الأقل.",answer:true,explain:"صحيح؛ الفحص السنوي يتيح الاكتشاف المبكر.",page:4},
+    {s:"تجاوزت حساسية نماذج التعلم العميق 90% في عدة دراسات.",answer:true,explain:"صحيح؛ وهذا ما يجعل الفحص الآلي واعداً.",page:3},
+    {s:"حقن مضادات VEGF تُعطى عن طريق الفم.",answer:false,explain:"خطأ؛ تُحقن مضادات VEGF داخل العين.",page:4}
+  ],
+  essay:[
+    {q:"قارن بين المرحلة غير التكاثرية والمرحلة التكاثرية لاعتلال الشبكية السكري.",marks:6,points:["علامات المرحلة غير التكاثرية: تمددات وعائية ونزف نقطي وإفرازات صلبة","علامة المرحلة التكاثرية: أوعية جديدة هشة","مضاعفات التكاثرية: نزف زجاجي وانفصال الشبكية"],answer:"تتميز المرحلة غير التكاثرية بتمددات وعائية دقيقة ونزف نقطي وإفرازات صلبة دون نمو أوعية جديدة. أما المرحلة التكاثرية فأخطر، إذ تنمو أوعية دموية جديدة هشة على سطح الشبكية قد تنزف داخل الجسم الزجاجي وتسبب انفصال الشبكية.",page:2},
+    {q:"اشرح وسائل تشخيص اعتلال الشبكية السكري ودور الذكاء الاصطناعي فيها.",marks:5,points:["فحص قاع العين بعد توسيع الحدقة","التصوير الفوتوغرافي لقاع العين","OCT لقياس سماكة البقعة","التعلم العميق بحساسية تتجاوز 90%"],answer:"يعتمد التشخيص على فحص قاع العين بعد توسيع الحدقة وتصويره، وعلى التصوير المقطعي OCT لقياس سماكة البقعة. وقد حققت نماذج التعلم العميق حساسية تتجاوز 90% في تصنيف الصور، ما يجعلها مناسبة لبرامج المسح الواسعة.",page:3}
+  ]
+};
 
 /* ---------- state ---------- */
-const S = { name:"مثال: اعتلال الشبكية السكري", isSample:true, pages:SAMPLE_PAGES.slice(), analysis:SAMPLE_ANALYSIS, analysisSrc:"sample", quiz:SAMPLE_QUIZ, quizSrc:"sample", answers:{}, readPage:1 };
+const S = { name:"مثال: اعتلال الشبكية السكري", isSample:true, pages:SAMPLE_PAGES.slice(), analysis:SAMPLE_ANALYSIS, analysisSrc:"sample",
+  q:{mcq:SAMPLE_Q.mcq, tf:SAMPLE_Q.tf, essay:SAMPLE_Q.essay}, qSrc:{mcq:"sample",tf:"sample",essay:"sample"}, ans:{mcq:{},tf:{},essay:{}}, qType:"mcq", readPage:1 };
 let sample = null, downloads = null, busy = false;
 
 /* ---------- local text analysis (works without Claude) ---------- */
-const STOP = new Set(("في من على إلى الى عن مع هذا هذه ذلك تلك التي الذي الذين اللذين ما ماذا لا لم لن ثم أو او أن ان إن كان كانت يكون تكون قد كل بعض بين عند حتى إذا اذا كما أي اي هو هي هم هن نحن أنا انا له لها لهم به بها فيه فيها منه منها عليه عليها وقد وهو وهي وفي ومن وعلى وأن وان ولا وما أكثر اكثر أيضا ايضا مثل غير بعد قبل خلال حيث لدى نحو مما الى وهذا وهذه تم يتم أحد احد كما فقط ذات ضمن عبر "+
+const STOP = new Set(("في من على إلى الى عن مع هذا هذه ذلك تلك التي الذي الذين اللذين ما ماذا لا لم لن ثم أو او أن ان إن كان كانت يكون تكون قد كل بعض بين عند حتى إذا اذا كما أي اي هو هي هم هن نحن أنا انا له لها لهم به بها فيه فيها منه منها عليه عليها وقد وهو وهي وفي ومن وعلى وأن وان ولا وما أكثر اكثر أيضا ايضا مثل غير بعد قبل خلال حيث لدى نحو مما وهذا وهذه تم يتم أحد احد فقط ذات ضمن عبر "+
 "the a an and or of to in on for with by is are was were be been being this that these those it its as at from which who whom whose not no but if then than so such can could may might will would should shall do does did has have had into over under about between their there they them we our you your he she his her i me my also more most other some any each all both only very same up out what when where how why").split(/\s+/));
 function wordsOf(t){ return (t.match(/[\p{L}\p{N}][\p{L}\p{N}\p{M}'-]*/gu) || []); }
 function norm(w){ return w.toLowerCase().replace(/[ً-ْـ]/g,""); }
@@ -279,24 +339,36 @@ function sentences(pages){
   const out=[]; pages.forEach((p,i)=>{ p.replace(/\s+/g," ").split(/(?<=[.!?؟])\s+/).forEach(s=>{ s=s.trim(); if(wordsOf(s).length>=6 && s.length<400) out.push({s,page:i+1}); }); });
   return out;
 }
+const shuffle = a => a.map(v=>[Math.random(),v]).sort((x,y)=>x[0]-y[0]).map(x=>x[1]);
+const cut = (s,n) => s.length>n ? s.slice(0,n-2)+"…" : s;
 function localAnalysis(pages){
   const kw = keywords(pages, 15), score = new Map(kw.map(k=>[norm(k.term),k.count]));
   const sents = sentences(pages).map((x,idx)=>{ const ws = wordsOf(x.s); let sc=0; ws.forEach(w=>sc+=score.get(norm(w))||0); return {...x,idx,sc:sc/Math.sqrt(ws.length)}; });
-  const top = [...sents].sort((a,b)=>b.sc-a.sc).slice(0,8);
+  const top = [...sents].sort((a,b)=>b.sc-a.sc).slice(0,10);
   const summ = top.slice(0,4).sort((a,b)=>a.idx-b.idx).map(x=>x.s).join(" ");
-  const branches = kw.slice(0,6).map(k=>({label:k.term,children:sents.filter(x=>x.s.includes(k.term)).slice(0,3).map(x=>x.s.length>90?x.s.slice(0,88)+"…":x.s)}));
-  return { title:S.name, summary:summ || "لم يُعثر على جمل كافية لتكوين ملخص.", key_points:top.slice(4,8).map(x=>x.s),
-    topics:kw.slice(0,6).map(k=>({name:k.term,pages:k.pages.slice(0,12),weight:Math.max(1,Math.round(5*k.count/kw[0].count))})),
+  const branches = kw.slice(0,6).map(k=>({label:k.term,children:sents.filter(x=>x.s.includes(k.term)).slice(0,3).map(x=>cut(x.s,90))}));
+  const kp = top.slice(0,6).map(x=>({label:(kw.find(k=>x.s.includes(k.term))||{term:"صفحة "+x.page}).term, text:x.s}));
+  return { title:S.name.replace(/\.pdf$/i,""), gist:top[0]?.s || "", summary:summ || "لم يُعثر على جمل كافية لتكوين ملخص.", key_points:kp,
+    topics:kw.slice(0,6).map(k=>({name:k.term,pages:k.pages,weight:Math.max(1,Math.round(5*k.count/kw[0].count))})),
     mindmap:{center:S.name.replace(/\.pdf$/i,""),branches}, terms:[], numbers:[], steps:[] };
 }
-function localQuiz(pages, count){
-  const kw = keywords(pages, 30).map(k=>k.term); const sents = sentences(pages); const used = new Set(); const qs=[];
-  for(const x of sents){ if(qs.length>=count) break;
+function localQuestions(type, pages, count){
+  const kw = keywords(pages, 30).map(k=>k.term), sents = sentences(pages), used = new Set(), out=[];
+  if(type==="essay"){
+    for(const k of kw){ if(out.length>=Math.min(count,8)) break;
+      const rel = sents.filter(x=>x.s.includes(k)).slice(0,4); if(rel.length<2) continue;
+      out.push({q:`اشرح ما ورد في المستند عن «${k}».`, marks:rel.length+1, points:rel.map(x=>cut(x.s,120)), answer:rel.map(x=>x.s).join(" "), page:rel[0].page}); }
+    return out;
+  }
+  for(const x of shuffle(sents)){ if(out.length>=count) break;
     const hit = kw.find(k=>x.s.includes(k) && !used.has(k)); if(!hit) continue;
-    const distract = kw.filter(k=>k!==hit).sort(()=>Math.random()-.5).slice(0,3); if(distract.length<3) break;
-    used.add(hit); const opts=[hit,...distract].sort(()=>Math.random()-.5);
-    qs.push({q:"أكمل الفراغ: «"+x.s.replace(hit,"_____")+"»",options:opts,answer:opts.indexOf(hit),explain:"الكلمة الصحيحة واردة في نص الصفحة "+x.page+".",page:x.page}); }
-  return qs;
+    const others = kw.filter(k=>k!==hit); if(others.length<3) break; used.add(hit);
+    if(type==="mcq"){ const opts = shuffle([hit,...shuffle(others).slice(0,3)]);
+      out.push({q:"أكمل الفراغ: «"+x.s.replace(hit,"_____")+"»",options:opts,answer:opts.indexOf(hit),explain:"الكلمة الصحيحة واردة في نص الصفحة "+x.page+".",page:x.page}); }
+    else { const truth = Math.random()<.5, swap = shuffle(others)[0];
+      out.push({s: truth ? x.s : x.s.replace(hit,swap), answer:truth, explain: truth ? "صحيح كما ورد في النص." : "خطأ؛ العبارة في النص: «"+x.s+"»", page:x.page}); }
+  }
+  return out;
 }
 
 /* ---------- rendering ---------- */
@@ -308,35 +380,61 @@ function renderDoc(){
   const counts = S.pages.map(p=>wordsOf(p).length), mx = Math.max(1,...counts);
   $("pageBars").innerHTML = counts.map((c,i)=>`<i style="height:${Math.max(4,c/mx*100)}%" title="صفحة ${i+1}: ${c} كلمة" data-p="${i+1}"></i>`).join("");
 }
+function highlight(text, kw){
+  let h = esc(text); kw.slice(0,5).forEach(k=>{ const t = esc(k.term); if(t.length<3) return; h = h.split(t).join(`<mark>${t}</mark>`); }); return h;
+}
+function donut(topics){
+  const total = topics.reduce((a,t)=>a+(+t.weight||1),0) || 1, R=40, C=2*Math.PI*R; let off=0;
+  const arcs = topics.map((t,i)=>{ const len = (+t.weight||1)/total*C, gap = topics.length>1?1.5:0;
+    const s = `<circle cx="50" cy="50" r="${R}" fill="none" stroke="${col(i)}" stroke-width="16" stroke-dasharray="${Math.max(0,len-gap)} ${C}" stroke-dashoffset="${-off}" transform="rotate(-90 50 50)"><title>${esc(t.name)}</title></circle>`; off+=len; return s; }).join("");
+  return `<div class="donutwrap"><svg class="donut" viewBox="0 0 100 100" role="img" aria-label="توزيع المحاور">${arcs}
+    <text x="50" y="49" text-anchor="middle" font-size="16" font-weight="600">${fmt(topics.length)}</text><text x="50" y="62" text-anchor="middle" font-size="7.5" style="font-family:var(--body);fill:var(--ink-2)">محاور</text></svg>
+    <ul class="legend">${topics.map((t,i)=>`<li style="--c:${col(i)}"><i></i><span>${esc(t.name)}</span><em>${fmt(Math.round((+t.weight||1)/total*100))}٪</em></li>`).join("")}</ul></div>`;
+}
+function heatmap(topics, nPages){
+  if(!nPages) return "";
+  const B = Math.min(nPages, 30), per = nPages/B;
+  const head = Array.from({length:B},(_,b)=>{ const from = Math.floor(b*per)+1, to = Math.floor((b+1)*per); return from===to ? from : from+"–"+to; });
+  return `<div class="heat"><table><thead><tr><th></th>${head.map(h=>`<th>${B===nPages?fmt(h):""}</th>`).join("")}</tr></thead><tbody>
+    ${topics.map((t,i)=>{ const ps = new Set((t.pages||[]).map(Number));
+      return `<tr style="--c:${col(i)}"><th title="${esc(t.name)}">${esc(t.name)}</th>${head.map((h,b)=>{ const from=Math.floor(b*per)+1,to=Math.max(from,Math.floor((b+1)*per)); let on=false; for(let p=from;p<=to;p++) if(ps.has(p)) on=true;
+        return `<td class="${on?"on":""}" title="صفحة ${h}"></td>`; }).join("")}</tr>`; }).join("")}</tbody></table></div>
+    <p class="note">كل خانة ${B===nPages?"صفحة":"مجموعة صفحات"}؛ الخانة الملوّنة تعني أن المحور يُناقش فيها.</p>`;
+}
 function renderSummary(){
   const a = S.analysis, kw = keywords(S.pages, 10), mx = kw[0]?.count || 1;
-  if(!a){ $("v-sum").innerHTML = `<div class="panel card"><p class="empty">اضغط «حلّل المستند» لإنشاء الملخص.</p></div>`; return; }
-  const tmax = Math.max(1,...(a.topics||[]).map(t=>+t.weight||1));
+  if(!a){ $("v-sum").innerHTML = `<div class="panel card"><p class="empty">اضغط «حلّل المستند» لإنشاء الملخص الرسومي.</p></div>`; return; }
+  const kps = (a.key_points||[]).map(p=>typeof p==="string" ? {label:"",text:p} : p);
+  const topics = a.topics||[], words = S.pages.reduce((x,p)=>x+wordsOf(p).length,0);
   $("v-sum").innerHTML = `
-  <div class="panel card">
-    <h2><span>${esc(a.title || S.name)} ${srcLabel(S.analysisSrc)}</span><button class="btn ghost small" id="copySum">نسخ الملخص</button></h2>
-    <p class="summary">${highlight(a.summary, kw)}</p>
+  <div class="hero">
+    <div class="eyebrow">الفكرة في سطر ${srcLabel(S.analysisSrc)}</div>
+    <h2>${esc(a.title || S.name)}</h2>
+    ${a.gist ? `<p class="gist">${highlight(a.gist, kw)}</p>` : ""}
+    <div class="meta"><span>${fmt(S.pages.length)} صفحة</span><span>${fmt(words)} كلمة</span><span>${fmt(topics.length)} محاور</span><span>${fmt(kps.length)} نقاط رئيسية</span></div>
   </div>
-  ${(a.key_points||[]).length ? `<div class="panel card"><h2>النقاط الرئيسية</h2><ul class="points">${a.key_points.map(p=>`<li>${highlight(p,kw)}</li>`).join("")}</ul></div>` : ""}
+  ${kps.length ? `<div class="panel card"><h2>النقاط الرئيسية</h2><div class="kpgrid">${kps.map((p,i)=>`
+    <div class="kp" style="--c:${col(i)}"><div class="ic">${fmt(i+1)}</div>${p.label?`<b>${esc(p.label)}</b>`:""}<span>${highlight(p.text,kw)}</span></div>`).join("")}</div></div>` : ""}
   ${(a.numbers||[]).length ? `<div class="panel card"><h2>أرقام بارزة</h2><div class="nums">${a.numbers.map(n=>`<div class="num"><b>${esc(n.value)}</b><span>${esc(n.label)}</span></div>`).join("")}</div></div>` : ""}
   <div class="two">
-    ${(a.topics||[]).length ? `<div class="panel card"><h2>المحاور ووزنها في النص</h2><div class="bars">${a.topics.map(t=>`
-      <div><div class="bar"><span class="t" title="${esc(t.name)}">${esc(t.name)}</span><div class="track"><div class="fill" style="width:${(+t.weight||1)/tmax*100}%"></div></div><span class="n">${esc(t.weight)}/5</span></div>
-      <div class="pchips">${(t.pages||[]).map(p=>`<span class="pchip">ص ${esc(p)}</span>`).join("")}</div></div>`).join("")}</div></div>` : ""}
+    ${topics.length ? `<div class="panel card"><h2>توزيع المحاور</h2>${donut(topics)}</div>` : ""}
     <div class="panel card"><h2>أكثر الكلمات تكراراً</h2><div class="bars">${kw.map(k=>`
       <div class="bar"><span class="t" title="${esc(k.term)}">${esc(k.term)}</span><div class="track"><div class="fill" style="width:${k.count/mx*100}%"></div></div><span class="n">${fmt(k.count)}</span></div>`).join("") || '<p class="empty">لا توجد كلمات كافية.</p>'}</div>
       <p class="note">محسوبة مباشرة من نص الملف بعد حذف أدوات الربط.</p></div>
   </div>
-  ${(a.terms||[]).length ? `<div class="panel card"><h2>مصطلحات أساسية</h2><dl class="terms">${a.terms.map(t=>`<div><dt>${esc(t.term)}</dt><dd>${esc(t.definition)}</dd></div>`).join("")}</dl></div>` : ""}`;
-  $("copySum").onclick = () => { const txt = (a.title||"")+"\n\n"+a.summary+"\n\n"+(a.key_points||[]).map(p=>"• "+p).join("\n");
+  ${topics.length ? `<div class="panel card"><h2>أين يُناقش كل محور</h2>${heatmap(topics, S.pages.length)}</div>` : ""}
+  ${(a.terms||[]).length ? `<div class="panel card"><h2>بطاقات المصطلحات</h2><div class="flash">${a.terms.map((t,i)=>`
+    <button class="fc" data-i="${i}"><span><b>${esc(t.term)}</b><small>اضغط لعرض التعريف</small></span></button>`).join("")}</div></div>` : ""}
+  <div class="panel card"><h2><span>الملخص النصي</span><button class="btn ghost small" id="copySum">نسخ الملخص</button></h2>
+    <p class="summary">${highlight(a.summary, kw)}</p></div>`;
+  $("v-sum").querySelectorAll(".fc").forEach(b=>b.onclick=()=>{ const t = a.terms[+b.dataset.i], open = !b.classList.contains("open");
+    b.classList.toggle("open",open); b.innerHTML = open ? `<span><b>${esc(t.term)}</b><br>${esc(t.definition)}</span>` : `<span><b>${esc(t.term)}</b><small>اضغط لعرض التعريف</small></span>`; });
+  $("copySum").onclick = () => { const txt = (a.title||"")+"\n\n"+(a.gist?a.gist+"\n\n":"")+a.summary+"\n\n"+kps.map(p=>"• "+(p.label?p.label+": ":"")+p.text).join("\n");
     navigator.clipboard.writeText(txt).then(()=>setStatus("تم نسخ الملخص.")).catch(()=>setStatus("تعذّر النسخ؛ حدّد النص وانسخه يدوياً.",true)); };
-}
-function highlight(text, kw){
-  let h = esc(text); kw.slice(0,5).forEach(k=>{ const t = esc(k.term); if(t.length<3) return; h = h.split(t).join(`<mark>${t}</mark>`); }); return h;
 }
 function renderMap(){
   const a = S.analysis; if(!a){ $("v-map").innerHTML = `<div class="panel card"><p class="empty">اضغط «حلّل المستند» لرسم الخريطة.</p></div>`; return; }
-  const m = a.mindmap || {center:a.title,branches:[]}, cols=["--b1","--b2","--b3","--b4","--b5","--b6"];
+  const m = a.mindmap || {center:a.title,branches:[]};
   $("v-map").innerHTML = `
   <div class="panel card">
     <h2><span>الخريطة الذهنية ${srcLabel(S.analysisSrc)}</span></h2>
@@ -344,37 +442,68 @@ function renderMap(){
       <div class="mm-center">${esc(m.center || a.title)}</div>
       <div class="mm-stem"></div>
       <div class="mm-branches">${(m.branches||[]).map((b,i)=>`
-        <div class="mm-b" style="--c:var(${cols[i%cols.length]})"><h3>${esc(b.label)}</h3><ul>${(b.children||[]).map(c=>`<li>${esc(c)}</li>`).join("")}</ul></div>`).join("")}</div>
+        <div class="mm-b" style="--c:${col(i)}"><h3>${esc(b.label)}</h3><ul>${(b.children||[]).map(c=>`<li>${esc(c)}</li>`).join("")}</ul></div>`).join("")}</div>
     </div>
   </div>
-  ${(a.steps||[]).length ? `<div class="panel card"><h2>التسلسل</h2><div class="flow">${a.steps.map((s,i)=>`${i?'<span class="arrow" aria-hidden="true">←</span>':""}<div class="step"><b>${fmt(i+1)}</b><span>${esc(s)}</span></div>`).join("")}</div></div>` : ""}
-  ${(a.numbers||[]).length ? `<div class="panel card"><h2>بطاقات الأرقام</h2><div class="nums">${a.numbers.map(n=>`<div class="num"><b>${esc(n.value)}</b><span>${esc(n.label)}</span></div>`).join("")}</div></div>` : ""}`;
+  ${(a.steps||[]).length ? `<div class="panel card"><h2>التسلسل</h2><div class="flow">${a.steps.map((s,i)=>`${i?'<span class="arrow" aria-hidden="true">←</span>':""}<div class="step"><b>${fmt(i+1)}</b><span>${esc(s)}</span></div>`).join("")}</div></div>` : ""}`;
+}
+
+/* questions */
+function qText(type, q, i){
+  const L = "أبجد";
+  if(type==="mcq") return `${i+1}. ${q.q}\n${q.options.map((o,j)=>`   ${L[j]||j+1}) ${o}`).join("\n")}\n   الإجابة: ${L[q.answer]}) ${q.options[q.answer]}\n   ${q.explain||""}`;
+  if(type==="tf") return `${i+1}. ${q.s}\n   الإجابة: ${q.answer?"صح":"خطأ"}\n   ${q.explain||""}`;
+  return `${i+1}. ${q.q}${q.marks?` (${q.marks} درجات)`:""}\n   عناصر الإجابة:\n${(q.points||[]).map(p=>"   - "+p).join("\n")}\n   نموذج الإجابة: ${q.answer||""}`;
 }
 function renderQuiz(){
-  const qs = S.quiz;
-  if(!qs || !qs.length){ $("v-quiz").innerHTML = `<div class="panel card"><p class="empty">اضغط «أنشئ الأسئلة» لتوليد اختبار من المستند.</p></div>`; return; }
-  const done = Object.keys(S.answers).length, right = qs.filter((q,i)=>S.answers[i]===q.answer).length;
-  $("v-quiz").innerHTML = `
+  const type = S.qType, qs = S.q[type], ans = S.ans[type];
+  const seg = `<div class="seg" role="group" aria-label="نوع الأسئلة">${Object.entries(TYPES).map(([k,v])=>`<button data-t="${k}" aria-pressed="${k===type}">${v}<small>${S.q[k]?fmt(S.q[k].length):"—"}</small></button>`).join("")}</div>`;
+  if(!qs || !qs.length){ $("v-quiz").innerHTML = seg + `<div class="panel card"><p class="empty">اضغط زر «أسئلة ${TYPES[type]}» في القائمة الجانبية لتوليدها من المستند.</p></div>`; bindSeg(); return; }
+  let head;
+  if(type==="essay"){
+    const shown = Object.keys(ans).length;
+    head = `<div class="score">عُرض نموذج الإجابة لـ ${fmt(shown)} من ${fmt(qs.length)}</div>`;
+  } else {
+    const done = Object.keys(ans).length, right = qs.filter((q,i)=>ans[i]!==undefined && (type==="tf" ? ans[i]===q.answer : ans[i]===q.answer)).length;
+    head = `<div class="score">الدرجة: ${fmt(right)} / ${fmt(qs.length)} · أُجيب ${fmt(done)}</div>
+      <div class="scorebar"><div class="g" style="width:${right/qs.length*100}%"></div><div class="x" style="width:${(done-right)/qs.length*100}%"></div></div>`;
+  }
+  const body = qs.map((q,i)=>{ const a = ans[i], answered = a!==undefined, meta = `<div class="qn">سؤال ${fmt(i+1)}${q.page?` · صفحة ${fmt(q.page)}`:""}${type==="essay"&&q.marks?`<span class="marks">${fmt(q.marks)} درجات</span>`:""}</div>`;
+    if(type==="mcq") return `<div class="panel q">${meta}<p class="qt">${esc(q.q)}</p>
+      <div class="opts">${q.options.map((o,j)=>{ let cls=""; if(answered){ if(j===q.answer) cls="right"; else if(j===a) cls="wrong"; }
+        return `<button class="opt ${cls}" data-q="${i}" data-o="${j}" ${answered?"disabled":""}><span class="k">${"أبجد"[j]||j+1}</span><span>${esc(o)}</span></button>`; }).join("")}</div>
+      ${answered && q.explain ? `<div class="explain">${esc(q.explain)}</div>`:""}</div>`;
+    if(type==="tf") return `<div class="panel q">${meta}<p class="qt">${esc(q.s)}</p>
+      <div class="opts tf">${[true,false].map(v=>{ let cls=""; if(answered){ if(v===q.answer) cls="right"; else if(v===a) cls="wrong"; }
+        return `<button class="opt ${cls}" data-q="${i}" data-o="${v}" ${answered?"disabled":""}>${v?"صح":"خطأ"}</button>`; }).join("")}</div>
+      ${answered && q.explain ? `<div class="explain">${esc(q.explain)}</div>`:""}</div>`;
+    return `<div class="panel q essay">${meta}<p class="qt">${esc(q.q)}</p>
+      <label class="note" for="ea${i}">اكتب إجابتك للتدرّب (لا تُحفظ)</label>
+      <textarea id="ea${i}" data-q="${i}">${esc(S.draft?.[i]||"")}</textarea>
+      <div style="margin-top:8px"><button class="btn ghost small" data-show="${i}">${answered?"إخفاء نموذج الإجابة":"إظهار نموذج الإجابة"}</button></div>
+      ${answered ? `<div class="model">${(q.points||[]).length?`<div class="lbl">عناصر يجب أن تتضمنها الإجابة</div><ul>${q.points.map(p=>`<li>${esc(p)}</li>`).join("")}</ul>`:""}
+        ${q.answer?`<div class="lbl">نموذج الإجابة</div><div>${esc(q.answer)}</div>`:""}</div>` : ""}</div>`;
+  }).join("");
+  $("v-quiz").innerHTML = seg + `
   <div class="panel card">
-    <div class="qhead"><h2 style="margin:0">اختبار من ${fmt(qs.length)} أسئلة ${srcLabel(S.quizSrc)}</h2>
-      <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn ghost small" id="qReset">إعادة الاختبار</button><button class="btn ghost small" id="qReveal">إظهار الإجابات</button><button class="btn ghost small" id="qSave" ${downloads?"":"hidden"}>حفظ الأسئلة</button></div></div>
-    <div class="score" style="margin-top:8px">الدرجة: ${fmt(right)} / ${fmt(qs.length)} · أُجيب ${fmt(done)}</div>
-    <div class="scorebar"><div class="g" style="width:${right/qs.length*100}%"></div><div class="x" style="width:${(done-right)/qs.length*100}%"></div></div>
-  </div>
-  ${qs.map((q,i)=>{ const a = S.answers[i], answered = a!==undefined;
-    return `<div class="panel q"><div class="qn">سؤال ${fmt(i+1)}${q.page?` · صفحة ${fmt(q.page)}`:""}</div><p class="qt">${esc(q.q)}</p>
-    <div class="opts">${q.options.map((o,j)=>{ let cls=""; if(answered){ if(j===q.answer) cls="right"; else if(j===a) cls="wrong"; }
-      return `<button class="opt ${cls}" data-q="${i}" data-o="${j}" ${answered?"disabled":""}><span class="k">${"أبجد"[j]||j+1}</span><span>${esc(o)}</span></button>`; }).join("")}</div>
-    ${answered && q.explain ? `<div class="explain">${esc(q.explain)}</div>`:""}</div>`; }).join("")}`;
-  $("v-quiz").querySelectorAll(".opt").forEach(b=>b.onclick=()=>{ S.answers[+b.dataset.q] = +b.dataset.o; renderQuiz(); });
-  $("qReset").onclick = ()=>{ S.answers={}; renderQuiz(); };
-  $("qReveal").onclick = ()=>{ qs.forEach((q,i)=>{ if(S.answers[i]===undefined) S.answers[i]=q.answer; }); renderQuiz(); };
+    <div class="qhead"><h2 style="margin:0">أسئلة ${TYPES[type]} ${srcLabel(S.qSrc[type])}</h2>
+      <div class="qtools"><button class="btn ghost small" id="qReset">إعادة</button><button class="btn ghost small" id="qReveal">إظهار كل الإجابات</button><button class="btn ghost small" id="qSave" ${downloads?"":"hidden"}>حفظ الأسئلة</button></div></div>
+    ${head}
+  </div>${body}`;
+  bindSeg();
+  const V = $("v-quiz");
+  V.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{ const o = b.dataset.o; ans[+b.dataset.q] = type==="tf" ? o==="true" : +o; renderQuiz(); });
+  V.querySelectorAll("textarea").forEach(t=>t.oninput=()=>{ S.draft = S.draft||{}; S.draft[+t.dataset.q]=t.value; });
+  V.querySelectorAll("[data-show]").forEach(b=>b.onclick=()=>{ const i=+b.dataset.show; if(ans[i]!==undefined) delete ans[i]; else ans[i]=true; renderQuiz(); });
+  $("qReset").onclick = ()=>{ S.ans[type]={}; if(type==="essay") S.draft={}; renderQuiz(); };
+  $("qReveal").onclick = ()=>{ qs.forEach((q,i)=>{ if(ans[i]===undefined) ans[i] = type==="essay" ? true : q.answer; }); renderQuiz(); };
   $("qSave").onclick = async ()=>{
-    const txt = qs.map((q,i)=>`${i+1}. ${q.q}\n${q.options.map((o,j)=>`   ${"أبجد"[j]}) ${o}`).join("\n")}\n   الإجابة: ${"أبجد"[q.answer]}) ${q.options[q.answer]}\n   ${q.explain||""}`).join("\n\n");
-    try{ await downloads.save({filename:(S.name.replace(/\.pdf$/i,"")||"quiz")+" - أسئلة.txt", data:txt}); setStatus("تم حفظ الأسئلة."); }
+    const txt = `أسئلة ${TYPES[type]} — ${S.name}\n\n` + qs.map((q,i)=>qText(type,q,i)).join("\n\n");
+    try{ await downloads.save({filename:(S.name.replace(/\.pdf$/i,"")||"quiz")+` - ${TYPES[type]}.txt`, data:txt}); setStatus("تم حفظ الأسئلة."); }
     catch(e){ setStatus("لم يتم الحفظ.", true); }
   };
 }
+function bindSeg(){ $("v-quiz").querySelectorAll(".seg button").forEach(b=>b.onclick=()=>{ S.qType=b.dataset.t; renderQuiz(); }); }
 function renderText(){
   const n = S.pages.length, p = Math.min(Math.max(1,S.readPage),n||1), txt = S.pages[p-1] || "";
   $("v-text").innerHTML = `<div class="panel card reader">
@@ -416,11 +545,11 @@ async function loadPdf(file){
       setStatus(`قراءة الصفحة ${fmt(i)} من ${fmt(pdf.numPages)}…`); setProg(i/pdf.numPages);
     }
     const words = pages.reduce((a,p)=>a+wordsOf(p).length,0);
-    Object.assign(S,{name:file.name,isSample:false,pages,analysis:null,quiz:null,answers:{},readPage:1});
+    Object.assign(S,{name:file.name,isSample:false,pages,analysis:null,q:{mcq:null,tf:null,essay:null},qSrc:{},ans:{mcq:{},tf:{},essay:{}},draft:{},readPage:1});
     setProg(null);
     if(words<30){ setStatus("لم يُعثر على نص قابل للقراءة. يبدو أن الملف صور ممسوحة ضوئياً بدون طبقة نص.", true); renderAll(); return; }
     setStatus(`تمت قراءة ${fmt(pages.length)} صفحة.`);
-    renderAll(); analyze();
+    renderAll(); showTab("v-sum"); analyze();
   }catch(e){ setProg(null); setStatus(e?.name==="PasswordException" ? "الملف محمي بكلمة مرور. افتح الحماية ثم ارفعه مجدداً." : "تعذّرت قراءة الملف. تأكد أنه PDF سليم.", true); }
 }
 $("file").onchange = e => loadPdf(e.target.files[0]);
@@ -441,7 +570,9 @@ function errMsg(e){
     rate_limited:"تم تجاوز حد الاستخدام مؤقتاً. حاول لاحقاً.",prompt_too_large:"المستند أطول من المسموح.",invalid_json:"وصل رد غير مكتمل. اضغط الزر مرة أخرى.",
     refused:"رفض Claude معالجة هذا المحتوى.",session_expired:"انتهت الجلسة؛ سجّل الدخول مجدداً."})[e?.code] || "حدث خطأ في الاتصال. اضغط الزر مرة أخرى.";
 }
-function setBusy(b){ busy=b; $("btnAnalyze").disabled=b; $("btnQuiz").disabled=b; }
+const qButtons = ["btnAnalyze","btnMcq","btnTf","btnEssay"];
+function setBusy(b){ busy=b; qButtons.forEach(id=>$(id).disabled=b); }
+function dropClaude(e){ if(e?.code==="not_granted"||e?.code==="sampling_disabled"){ sample=null; setEngine(false); return true; } return false; }
 
 async function analyze(){
   if(busy) return;
@@ -450,11 +581,12 @@ async function analyze(){
   const prompt = `You are a study assistant. Analyze the document below and reply with ONLY one JSON object, all text values written in ${langName()}.
 Shape:
 {"title": string (a clear title for the document),
+ "gist": string (the core idea in ONE sentence, under 25 words),
  "summary": string (4-6 sentences),
- "key_points": [string] (5-8 items),
- "topics": [{"name": string, "pages": [int], "weight": int 1-5 (share of the document)}] (3-7 items),
+ "key_points": [{"label": string (2-4 words), "text": string (one sentence)}] (5-8 items),
+ "topics": [{"name": string, "pages": [int] (every page where it is discussed), "weight": int 1-5 (share of the document)}] (3-6 items),
  "mindmap": {"center": string (short), "branches": [{"label": string (1-4 words), "children": [string (under 10 words)]}]} (4-6 branches, 2-5 children each),
- "terms": [{"term": string, "definition": string}] (up to 8),
+ "terms": [{"term": string, "definition": string}] (up to 10),
  "numbers": [{"value": string, "label": string}] (important figures stated in the text only; [] if none),
  "steps": [string] (a real process or sequence described in the text, 3-7 items; [] if none)}
 Use only facts from the document. Page numbers come from the [صفحة N] markers.
@@ -466,43 +598,60 @@ ${text}`;
     if(!r || typeof r!=="object" || !r.summary) throw {code:"invalid_json"};
     S.analysis = r; S.analysisSrc="claude"; setStatus(used<S.pages.length ? `تم التحليل (أول ${fmt(used)} صفحة بسبب الطول).` : "تم التحليل.");
   }catch(e){
-    if(e?.code==="not_granted"||e?.code==="sampling_disabled"){ sample=null; setEngine(false); }
+    dropClaude(e);
     if(!S.analysis || S.analysisSrc!=="claude"){ S.analysis = localAnalysis(S.pages); S.analysisSrc="local"; }
     setStatus(errMsg(e), true);
   }finally{ setBusy(false); renderSummary(); renderMap(); }
 }
-async function makeQuiz(){
+
+const QPROMPT = {
+  mcq: (n,lvl) => `Write ${n} multiple-choice exam questions. Difficulty: ${lvl}. Each has exactly 4 options, one correct; distractors must be plausible. Vary the position of the correct option.
+Reply with ONLY a JSON array: [{"q": string, "options": [string,string,string,string], "answer": int 0-3, "explain": string (one sentence, why it is correct), "page": int}]`,
+  tf: (n,lvl) => `Write ${n} true/false exam statements. Difficulty: ${lvl}. About half must be false; make false ones by changing one important detail (a number, a cause, a stage, a term) so they sound plausible.
+Reply with ONLY a JSON array: [{"s": string (the statement), "answer": boolean, "explain": string (for false ones, state the correct fact), "page": int}]`,
+  essay: (n,lvl) => `Write ${n} essay (open-ended) questions that are likely to appear in an exam on this document. Difficulty: ${lvl}. Use verbs such as explain, compare, discuss, justify. For each, give the points a full-mark answer must include and a model answer.
+Reply with ONLY a JSON array: [{"q": string, "marks": int 2-10, "points": [string] (3-6 items), "answer": string (model answer, 3-6 sentences), "page": int}]`
+};
+function validQ(type, r){
+  const a = Array.isArray(r) ? r : [];
+  if(type==="mcq") return a.filter(q=>q && q.q && Array.isArray(q.options) && q.options.length>=2 && Number.isInteger(+q.answer) && +q.answer<q.options.length).map(q=>({...q,answer:+q.answer}));
+  if(type==="tf") return a.filter(q=>q && q.s && (q.answer===true||q.answer===false||q.answer==="true"||q.answer==="false")).map(q=>({...q,answer:q.answer===true||q.answer==="true"}));
+  return a.filter(q=>q && q.q).map(q=>({...q,points:Array.isArray(q.points)?q.points:[]}));
+}
+async function makeQuestions(type){
   if(busy) return;
-  const count = +$("qCount").value, level = $("qLevel").value;
-  S.answers = {};
-  if(!sample){ S.quiz = localQuiz(S.pages, count); S.quizSrc="local"; renderQuiz(); showTab("v-quiz");
-    if(!S.quiz.length) setStatus("النص غير كافٍ لتوليد أسئلة محلياً.", true); return; }
-  const {text, used} = docText(); setBusy(true); showTab("v-quiz");
-  $("v-quiz").innerHTML = `<div class="panel card"><p class="empty" id="qWait">Claude يكتب ${fmt(count)} أسئلة…</p></div>`;
-  const prompt = `Write ${count} multiple-choice questions that test understanding of the document below. Difficulty: ${level}. Write every question, option and explanation in ${langName()}.
-Each question has exactly 4 options, one correct; distractors must be plausible. Spread questions across the whole document; prefer concepts, causes and comparisons over trivia. Vary the position of the correct option.
-Reply with ONLY a JSON array: [{"q": string, "options": [string,string,string,string], "answer": int 0-3, "explain": string (one sentence, why it is correct), "page": int}]
+  let count = +$("qCount").value; if(type==="essay") count = Math.min(count, 10);
+  const lvl = $("qLevel").value;
+  S.qType = type; S.ans[type] = {}; if(type==="essay") S.draft={};
+  showTab("v-quiz");
+  if(!sample){ S.q[type] = localQuestions(type, S.pages, count); S.qSrc[type]="local"; renderQuiz();
+    if(!S.q[type].length) setStatus("النص غير كافٍ لتوليد هذا النوع من الأسئلة محلياً.", true); return; }
+  const {text, used} = docText(); setBusy(true);
+  S.q[type] = null; renderQuiz();
+  const wait = () => $("v-quiz").querySelector(".empty");
+  if(wait()) wait().textContent = `Claude يكتب أسئلة ${TYPES[type]}…`;
+  const prompt = QPROMPT[type](count, lvl) + `
+Write every question and answer in ${langName()}. Spread questions across the whole document; prefer concepts, causes and comparisons over trivia. Use only facts from the document; page numbers come from the [صفحة N] markers.
 
 Document "${S.name}" (pages 1-${used} of ${S.pages.length}):
 ${text}`;
   try{
-    const r = await sample.json(prompt, {cache:false, onText:({text})=>{ const w=$("qWait"); if(w) w.textContent=`Claude يكتب الأسئلة… ${fmt(text.length)} حرف`; }});
-    const qs = (Array.isArray(r)?r:[]).filter(q=>q && q.q && Array.isArray(q.options) && q.options.length>=2 && Number.isInteger(+q.answer) && +q.answer<q.options.length).map(q=>({...q,answer:+q.answer}));
-    if(!qs.length) throw {code:"invalid_json"};
-    S.quiz = qs; S.quizSrc="claude"; setStatus(`تم إنشاء ${fmt(qs.length)} سؤالاً.`);
+    const r = await sample.json(prompt, {cache:false, onText:({text})=>{ const w=wait(); if(w) w.textContent=`Claude يكتب أسئلة ${TYPES[type]}… ${fmt(text.length)} حرف`; }});
+    const qs = validQ(type, r); if(!qs.length) throw {code:"invalid_json"};
+    S.q[type] = qs; S.qSrc[type]="claude"; setStatus(`تم إنشاء ${fmt(qs.length)} سؤالاً (${TYPES[type]}).`);
   }catch(e){
-    if(e?.code==="not_granted"||e?.code==="sampling_disabled"){ sample=null; setEngine(false); S.quiz = localQuiz(S.pages,count); S.quizSrc="local"; }
+    if(dropClaude(e)){ S.q[type] = localQuestions(type, S.pages, count); S.qSrc[type]="local"; }
     setStatus(errMsg(e), true);
   }finally{ setBusy(false); renderQuiz(); }
 }
 $("btnAnalyze").onclick = analyze;
-$("btnQuiz").onclick = makeQuiz;
+["btnMcq","btnTf","btnEssay"].forEach(id=>$(id).onclick=()=>makeQuestions($(id).dataset.type));
 
 function setEngine(on){
   $("engDot").className = "dot"+(on?" on":"");
   $("engTxt").textContent = on ? "التحليل الذكي بواسطة Claude" : "التحليل المحلي";
   $("engNote").textContent = on ? "يُرسل نص المستند إلى Claude عند الضغط على الأزرار، ويُحتسب من استخدام حسابك."
-    : "Claude غير متاح هنا، لذلك يعمل الموقع بتحليل محلي أبسط: ملخص استخلاصي وأسئلة إكمال فراغ.";
+    : "Claude غير متاح هنا، لذلك يعمل الموقع بتحليل محلي أبسط: ملخص من جمل النص وأسئلة مبنية على كلماته المفتاحية.";
 }
 
 renderAll();
