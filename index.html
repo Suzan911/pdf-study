@@ -10,7 +10,7 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Reem+Kufi:wght@500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
-<style>
+<style id="app-style">
 /* Layout: study desk — document rail on the start side, worksheet tabs in the main column; a highlighter yellow marks what matters */
 :root{
   --paper:#F6F8F9; --sheet:#FFFFFF; --ink:#16313B; --ink-2:#4B6570; --line:#DCE4E7;
@@ -73,9 +73,26 @@ header.top{display:flex;align-items:center;justify-content:space-between;gap:16p
 .ctrls{display:grid;gap:10px}
 .ctrls label{display:grid;gap:4px;font-size:13px;color:var(--ink-2)}
 .qbtns{display:grid;gap:6px}
-.access{display:flex;gap:8px;align-items:flex-end;background:var(--teal-soft);border-radius:8px;padding:10px}
-.access label{flex:1;min-width:0}
-.access input{width:100%;background:var(--sheet);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:6px 8px}
+.savebox{display:grid;gap:6px;border-top:1px solid var(--line);padding-top:12px}
+.btn.save{background:var(--marker);color:var(--marker-ink)}
+
+/* shared library */
+.lib{padding:14px 16px;margin-bottom:16px;display:grid;gap:10px}
+.lib-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap}
+.lib-head h2{font-family:var(--display);font-size:18px;font-weight:500}
+.lib-list{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px}
+.li{flex:0 0 220px;display:grid;gap:4px;text-align:start;border:1px solid var(--line);border-radius:var(--r);padding:10px 12px;background:var(--paper);cursor:pointer;color:var(--ink);position:relative}
+.li:hover{border-color:var(--teal)}
+.li[aria-current="true"]{border-color:var(--teal);background:var(--teal-soft);box-shadow:inset 0 -3px 0 var(--marker)}
+.li b{font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding-inline-end:22px}
+.li small{color:var(--ink-2);font-size:12px;font-variant-numeric:tabular-nums}
+.li .tags{display:flex;gap:4px;flex-wrap:wrap}
+.li .tags span{font-size:11px;border:1px solid var(--line);border-radius:4px;padding:0 5px;color:var(--ink-2);background:var(--sheet)}
+.li .del{position:absolute;top:6px;inset-inline-end:6px;border:0;background:none;color:var(--ink-2);cursor:pointer;font-size:16px;line-height:1;padding:2px 5px;border-radius:4px}
+.li .del:hover{color:var(--bad);background:var(--bad-soft)}
+.li .del.confirm{color:var(--sheet);background:var(--bad);font-size:12px}
+.libLink{display:block;margin-bottom:16px;padding:12px 16px;border-radius:var(--r);background:var(--teal-soft);color:var(--ink);font-weight:600;text-decoration:none;border:1px solid var(--line)}
+.libLink:hover{border-color:var(--teal)}
 select{background:var(--paper);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:6px 8px}
 .btn{border:0;border-radius:8px;padding:9px 14px;cursor:pointer;background:var(--teal);color:var(--sheet);font-weight:600}
 .btn:disabled{opacity:.5;cursor:not-allowed}
@@ -228,12 +245,6 @@ select{background:var(--paper);color:var(--ink);border:1px solid var(--line);bor
         <label for="lang">لغة النتائج
           <select id="lang"><option value="ar">العربية</option><option value="en">English</option></select>
         </label>
-        <div class="access" id="accessBox" hidden>
-          <label for="accessCode">رمز الدخول للتحليل الذكي
-            <input id="accessCode" type="password" autocomplete="off" dir="ltr">
-          </label>
-          <button class="btn ghost small" id="btnCode">تفعيل</button>
-        </div>
         <button class="btn" id="btnAnalyze">حلّل المستند</button>
         <label for="qCount">عدد الأسئلة
           <select id="qCount"><option>5</option><option selected>10</option><option>15</option><option>20</option></select>
@@ -247,10 +258,19 @@ select{background:var(--paper);color:var(--ink);border:1px solid var(--line);bor
           <button class="btn ghost" id="btnEssay" data-type="essay">أسئلة مقالية متوقعة</button>
         </div>
         <p class="note" id="engNote"></p>
+        <div class="savebox" id="saveBox" hidden>
+          <button class="btn save" id="btnSave">حفظ في المكتبة</button>
+          <p class="note">يظهر المستند بتحليله وأسئلته لكل من يفتح رابط الصفحة، بدون أي تكلفة عليهم.</p>
+        </div>
       </div>
     </aside>
 
     <main class="main">
+      <a class="libLink" id="libLink" hidden href="https://claude.ai/artifact/NtmEP9eifcHBaC1aipzEqK" target="_blank" rel="noopener">المكتبة المشتركة: ملفات محللة جاهزة مع أسئلتها ←</a>
+      <section class="panel lib" id="lib" hidden>
+        <div class="lib-head"><h2>المكتبة المشتركة</h2><span class="note" id="libNote"></span></div>
+        <div class="lib-list" id="libList"></div>
+      </section>
       <div class="tabs" role="tablist">
         <button class="tab" role="tab" id="t-sum" aria-selected="true" data-v="v-sum">الملخص الرسومي</button>
         <button class="tab" role="tab" id="t-map" aria-selected="false" data-v="v-map">الخريطة الذهنية</button>
@@ -270,14 +290,21 @@ select{background:var(--paper);color:var(--ink);border:1px solid var(--line);bor
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js"></script>
 <script>
 (function(){
+/* canonical page parts, captured before anything renders, so the page can republish itself with a new library */
+const TPL = {
+  main: document.currentScript ? document.currentScript.outerHTML : "",
+  wrap: document.querySelector(".wrap").outerHTML,
+  style: document.getElementById("app-style").outerHTML,
+  fonts: [...document.querySelectorAll('link[href^="https://fonts.googleapis.com"]')].map(l=>l.outerHTML).join("\n")
+};
+let LIB = []; try{ LIB = JSON.parse(document.getElementById("libdata")?.textContent || "[]"); }catch(e){ LIB = []; }
 document.documentElement.setAttribute("dir","rtl");
 document.documentElement.setAttribute("lang","ar");
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const fmt = n => Number(n).toLocaleString("ar-EG");
 const MAX_CHARS = 80000;
-// Cloudflare Worker that calls Claude on the site owner's API key (outside claude.ai); empty = local analysis only
-const API_URL = "";
+const LIB_TEXT_CAP = 300000;
 const COLS = ["--b1","--b2","--b3","--b4","--b5","--b6"];
 const col = i => `var(${COLS[i%COLS.length]})`;
 const TYPES = {mcq:"اختيار من متعدد", tf:"صح أو خطأ", essay:"مقالي"};
@@ -556,7 +583,7 @@ async function loadPdf(file){
       setStatus(`قراءة الصفحة ${fmt(i)} من ${fmt(pdf.numPages)}…`); setProg(i/pdf.numPages);
     }
     const words = pages.reduce((a,p)=>a+wordsOf(p).length,0);
-    Object.assign(S,{name:file.name,isSample:false,pages,analysis:null,q:{mcq:null,tf:null,essay:null},qSrc:{},ans:{mcq:{},tf:{},essay:{}},draft:{},readPage:1});
+    Object.assign(S,{name:file.name,isSample:false,libId:null,pages,analysis:null,q:{mcq:null,tf:null,essay:null},qSrc:{},ans:{mcq:{},tf:{},essay:{}},draft:{},readPage:1});
     setProg(null);
     if(words<30){ setStatus("لم يُعثر على نص قابل للقراءة. يبدو أن الملف صور ممسوحة ضوئياً بدون طبقة نص.", true); renderAll(); return; }
     setStatus(`تمت قراءة ${fmt(pages.length)} صفحة.`);
@@ -580,42 +607,11 @@ function errMsg(e){
   return ({not_granted:"لم يُسمح باستخدام Claude؛ تم استخدام التحليل المحلي.",sampling_disabled:"Claude غير متاح لهذا الحساب؛ تم استخدام التحليل المحلي.",
     rate_limited:"تم تجاوز حد الاستخدام مؤقتاً. حاول لاحقاً.",prompt_too_large:"المستند أطول من المسموح.",invalid_json:"وصل رد غير مكتمل. اضغط الزر مرة أخرى.",
     refused:"رفض Claude معالجة هذا المحتوى.",session_expired:"انتهت الجلسة؛ سجّل الدخول مجدداً.",
-    bad_code:"رمز الدخول غير صحيح؛ تم استخدام التحليل المحلي.",daily_limit:"انتهى عدد التحليلات المسموح به اليوم لهذا الرمز. حاول غداً."})[e?.code] || "حدث خطأ في الاتصال. اضغط الزر مرة أخرى.";
+  })[e?.code] || "حدث خطأ في الاتصال. اضغط الزر مرة أخرى.";
 }
-
-/* ---------- remote engine: the owner's Worker, used outside claude.ai ---------- */
-function parseJSON(text){
-  try{ return JSON.parse(text); }catch(e){}
-  const fence = text.match(/```(?:json)?\s*([\s\S]*?)```/); if(fence){ try{ return JSON.parse(fence[1]); }catch(e){} }
-  const a = text.search(/[\[{]/), b = Math.max(text.lastIndexOf("}"), text.lastIndexOf("]"));
-  if(a>=0 && b>a){ try{ return JSON.parse(text.slice(a,b+1)); }catch(e){} }
-  throw {code:"invalid_json"};
-}
-async function callWorker(payload){
-  let res;
-  try{ res = await fetch(API_URL, {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(payload)}); }
-  catch(e){ throw {code:"upstream_error"}; }
-  const data = await res.json().catch(()=>({}));
-  if(res.ok) return data;
-  const err = data.error;
-  throw {code: err==="bad_code" ? "bad_code" : err==="daily_limit" ? "daily_limit" : res.status===429 ? "rate_limited" : res.status===413 ? "prompt_too_large" : err==="refused" ? "refused" : "upstream_error"};
-}
-function remoteEngine(code){
-  return { json: async (prompt) => { const d = await callWorker({code, prompt}); if(d.truncated) throw {code:"invalid_json"}; return parseJSON(d.text||""); } };
-}
-const storeCode = v => { try{ v ? localStorage.setItem("pdfstudy.code", v) : localStorage.removeItem("pdfstudy.code"); }catch(e){} };
-$("btnCode").onclick = async () => {
-  const code = $("accessCode").value.trim(); if(!code) return;
-  $("btnCode").disabled = true; setStatus("جارٍ التحقق من الرمز…");
-  try{ await callWorker({code, check:true}); storeCode(code); sample = remoteEngine(code); setEngine(true); setStatus("تم تفعيل التحليل الذكي."); }
-  catch(e){ setStatus(e.code==="bad_code" ? "رمز الدخول غير صحيح." : "تعذّر الاتصال بالخادم. حاول لاحقاً.", true); }
-  finally{ $("btnCode").disabled = false; }
-};
-$("accessCode").addEventListener("keydown", e => { if(e.key==="Enter") $("btnCode").click(); });
 const qButtons = ["btnAnalyze","btnMcq","btnTf","btnEssay"];
 function setBusy(b){ busy=b; qButtons.forEach(id=>$(id).disabled=b); }
 function dropClaude(e){
-  if(e?.code==="bad_code"){ storeCode(""); sample=null; setEngine(false); return true; }
   if(e?.code==="not_granted"||e?.code==="sampling_disabled"){ sample=null; setEngine(false); return true; }
   return false;
 }
@@ -693,26 +689,88 @@ ${text}`;
 $("btnAnalyze").onclick = analyze;
 ["btnMcq","btnTf","btnEssay"].forEach(id=>$(id).onclick=()=>makeQuestions($(id).dataset.type));
 
-let remoteMode = false;
 function setEngine(on){
   $("engDot").className = "dot"+(on?" on":"");
   $("engTxt").textContent = on ? "التحليل الذكي بواسطة Claude" : "التحليل المحلي";
-  $("accessBox").hidden = !(remoteMode && !on);
-  $("engNote").textContent = on
-    ? (remoteMode ? "يُرسل نص المستند إلى Claude عند الضغط على الأزرار." : "يُرسل نص المستند إلى Claude عند الضغط على الأزرار، ويُحتسب من استخدام حسابك.")
-    : remoteMode ? "أدخل رمز الدخول لتفعيل التحليل الذكي. بدونه يعمل الموقع بتحليل محلي أبسط."
+  $("engNote").textContent = on ? "يُرسل نص المستند إلى Claude عند الضغط على الأزرار، ويُحتسب من استخدام حسابك."
     : "Claude غير متاح هنا، لذلك يعمل الموقع بتحليل محلي أبسط: ملخص من جمل النص وأسئلة مبنية على كلماته المفتاحية.";
 }
 
-renderAll();
+/* ---------- shared library: saved into the page itself, readable by anyone with the link ---------- */
+let artifactNs = null, canSave = false;
+const fmtDate = iso => { try{ return new Date(iso).toLocaleDateString("ar-EG",{day:"numeric",month:"short",year:"numeric"}); }catch(e){ return ""; } };
+function renderLib(){
+  $("lib").hidden = !LIB.length;
+  $("libNote").textContent = LIB.length ? `${fmt(LIB.length)} ملفات · اضغط على ملف لفتحه` : "";
+  $("libList").innerHTML = LIB.map(it=>{
+    const tags = [it.analysis?"ملخص":"", ...Object.keys(TYPES).filter(k=>it.q?.[k]?.length).map(k=>TYPES[k])].filter(Boolean);
+    return `<div class="li" role="button" tabindex="0" data-id="${esc(it.id)}" aria-current="${S.libId===it.id}">
+      <b title="${esc(it.name)}">${esc(it.name.replace(/\.pdf$/i,""))}</b>
+      <small>${fmt(it.pages.length)} صفحة · ${esc(fmtDate(it.savedAt))}</small>
+      <div class="tags">${tags.map(t=>`<span>${esc(t)}</span>`).join("")}</div>
+      ${canSave?`<button class="del" data-del="${esc(it.id)}" aria-label="حذف من المكتبة">×</button>`:""}</div>`; }).join("");
+  $("libList").querySelectorAll(".li").forEach(el=>{
+    const open = () => openLib(el.dataset.id);
+    el.onclick = e => { if(!e.target.closest(".del")) open(); };
+    el.onkeydown = e => { if((e.key==="Enter"||e.key===" ") && e.target===el){ e.preventDefault(); open(); } };
+  });
+  $("libList").querySelectorAll(".del").forEach(b=>b.onclick=()=>{
+    if(!b.classList.contains("confirm")){ b.classList.add("confirm"); b.textContent="تأكيد الحذف"; return; }
+    publishLib(LIB.filter(x=>x.id!==b.dataset.del), "تم الحذف من المكتبة.");
+  });
+}
+function openLib(id){
+  const it = LIB.find(x=>x.id===id); if(!it) return;
+  Object.assign(S,{name:it.name,isSample:false,libId:it.id,pages:it.pages,analysis:it.analysis||null,analysisSrc:it.analysisSrc||"claude",
+    q:{mcq:it.q?.mcq||null,tf:it.q?.tf||null,essay:it.q?.essay||null},qSrc:it.qSrc||{},ans:{mcq:{},tf:{},essay:{}},draft:{},readPage:1});
+  renderAll(); renderLib(); setStatus("");
+}
+function buildDoc(lib){
+  const RESET = ":root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px/1.5 system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}";
+  const data = JSON.stringify(lib).replace(/</g,"\\u003c");
+  const content = [`<title>${esc(document.title)}</title>`, `<meta name="claude:viewport-fit-sides" content="cover">`,
+    `<link rel="preconnect" href="https://fonts.googleapis.com">`, TPL.fonts, TPL.style, TPL.wrap,
+    `<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"><\/script>`,
+    `<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js"><\/script>`,
+    `<script type="application/json" id="libdata">${data}<\/script>`, TPL.main].join("\n");
+  return `<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>${RESET}</style></head><body>${content}</body></html>`;
+}
+async function publishLib(lib, okMsg){
+  if(!artifactNs || !TPL.main) return;
+  $("btnSave").disabled = true; setStatus("جارٍ الحفظ في المكتبة…");
+  try{ await artifactNs.publish(buildDoc(lib)); setStatus(okMsg); }
+  catch(e){
+    const c = e?.code;
+    if(c==="not_writer"||c==="not_granted"||c==="not_declared"||c==="consent_required"||c==="capability_disabled"){ canSave=false; $("saveBox").hidden=true; renderLib(); setStatus("هذه الصفحة للعرض فقط؛ الحفظ لصاحبة الصفحة.", true); }
+    else if(c==="conflict") setStatus("تغيّرت المكتبة من جهاز آخر؛ ستُحدَّث الصفحة، ثم احفظ مرة أخرى.", true);
+    else if(c==="too_large") setStatus("المكتبة كبيرة جداً. احذف بعض الملفات القديمة ثم احفظ.", true);
+    else setStatus("تعذّر الحفظ. حاول مرة أخرى بعد قليل.", true);
+  }finally{ $("btnSave").disabled = false; }
+}
+$("btnSave").onclick = () => {
+  if(S.isSample){ setStatus("ارفع ملفك أولاً؛ المثال لا يُحفظ في المكتبة.", true); return; }
+  if(!S.analysis){ setStatus("حلّل المستند أولاً، ثم احفظه.", true); return; }
+  let total = 0; const pages = S.pages.map(p=>{ const keep = total<LIB_TEXT_CAP ? p.slice(0, LIB_TEXT_CAP-total) : ""; total += keep.length; return keep; });
+  const item = { id:S.libId || Date.now().toString(36), name:S.name, savedAt:new Date().toISOString(), pages,
+    analysis:S.analysis, analysisSrc:S.analysisSrc, q:S.q, qSrc:S.qSrc };
+  const lib = LIB.some(x=>x.id===item.id) ? LIB.map(x=>x.id===item.id?item:x) : [item, ...LIB];
+  try{ sessionStorage.setItem("pdfstudy.open", item.id); }catch(e){}
+  publishLib(lib, "تم الحفظ. يظهر الآن في المكتبة لكل من يفتح الرابط.");
+};
+
+if(LIB.length){
+  let id = null; try{ id = sessionStorage.getItem("pdfstudy.open"); sessionStorage.removeItem("pdfstudy.open"); }catch(e){}
+  openLib(LIB.some(x=>x.id===id) ? id : LIB[0].id);
+} else renderAll();
+renderLib();
+$("libLink").hidden = !!window.claude;
 (async()=>{
   try{ sample = await window.claude?.use?.("sample") || null; }catch(e){ sample=null; }
   try{ downloads = await window.claude?.use?.("downloads") || null; }catch(e){ downloads=null; }
-  if(!sample && API_URL){
-    remoteMode = true;
-    let code = ""; try{ code = localStorage.getItem("pdfstudy.code") || ""; }catch(e){}
-    if(code) sample = remoteEngine(code);
-  }
+  try{ artifactNs = await window.claude?.use?.("artifact") || null; }catch(e){ artifactNs=null; }
+  if(artifactNs){ let user=null; try{ user = await window.claude.use("user"); }catch(e){}
+    canSave = user ? (user.canEdit?.() ?? user.isOwner?.() ?? false) : false;
+    canSave = !!(await canSave); $("saveBox").hidden = !canSave; renderLib(); }
   setEngine(!!sample); renderQuiz();
 })();
 })();
