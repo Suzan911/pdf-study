@@ -1,0 +1,519 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>body{margin:0}[hidden]{display:none!important}img{max-width:100%}</style>
+</head>
+<body>
+<title>مُذاكِر PDF</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Reem+Kufi:wght@500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: study desk — document rail on the start side, worksheet tabs in the main column; a highlighter yellow marks what matters */
+:root{
+  --paper:#F6F8F9; --sheet:#FFFFFF; --ink:#16313B; --ink-2:#4B6570; --line:#DCE4E7;
+  --teal:#1F5E6E; --teal-soft:#E3EFF1; --marker:#F7D64A; --marker-ink:#3A2E00;
+  --good:#2E7D4F; --good-soft:#E2F3E8; --bad:#B23A3A; --bad-soft:#F8E3E3;
+  --b1:#1F5E6E; --b2:#7A4FA0; --b3:#B5622A; --b4:#2E7D4F; --b5:#A83E6A; --b6:#3D5BA8;
+  --display:"Reem Kufi","IBM Plex Sans Arabic",system-ui,sans-serif;
+  --body:"IBM Plex Sans Arabic",system-ui,"Segoe UI",Tahoma,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Consolas,monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#0F1A1E; --sheet:#16252B; --ink:#E4EEF0; --ink-2:#9DB3BA; --line:#2A3D44;
+  --teal:#6EC1CF; --teal-soft:#1C3A42; --marker:#E9C93A; --marker-ink:#2A2100;
+  --good:#6FCF97; --good-soft:#173528; --bad:#F08A8A; --bad-soft:#3A1E1E;
+  --b1:#6EC1CF; --b2:#B99AE0; --b3:#E9A170; --b4:#6FCF97; --b5:#E68BB2; --b6:#8FA8F0;
+  color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#0F1A1E; --sheet:#16252B; --ink:#E4EEF0; --ink-2:#9DB3BA; --line:#2A3D44;
+  --teal:#6EC1CF; --teal-soft:#1C3A42; --marker:#E9C93A; --marker-ink:#2A2100;
+  --good:#6FCF97; --good-soft:#173528; --bad:#F08A8A; --bad-soft:#3A1E1E;
+  --b1:#6EC1CF; --b2:#B99AE0; --b3:#E9A170; --b4:#6FCF97; --b5:#E68BB2; --b6:#8FA8F0;
+  color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.7}
+.wrap{max-width:1180px;margin:0 auto;padding-block:20px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{text-wrap:balance;margin:0}
+button,select,input{font:inherit}
+:focus-visible{outline:2px solid var(--teal);outline-offset:2px}
+mark{background:linear-gradient(transparent 35%,var(--marker) 35%,var(--marker) 88%,transparent 88%);color:inherit;padding:0 2px}
+
+header.top{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:18px}
+.brand{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.brand h1{font-family:var(--display);font-size:30px;font-weight:700;letter-spacing:0}
+.brand p{margin:0;color:var(--ink-2)}
+.engine{font-size:13px;color:var(--ink-2);display:flex;align-items:center;gap:8px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--ink-2)}
+.dot.on{background:var(--good)}
+
+.grid{display:grid;grid-template-columns:300px minmax(0,1fr);gap:20px;align-items:start}
+@media (max-width:860px){.grid{grid-template-columns:minmax(0,1fr)}}
+
+.panel{background:var(--sheet);border:1px solid var(--line);border-radius:var(--r)}
+.rail{display:flex;flex-direction:column;gap:16px;padding:16px}
+.drop{border:2px dashed var(--line);border-radius:var(--r);padding:20px 14px;text-align:center;cursor:pointer;transition:border-color .15s,background .15s}
+.drop:hover,.drop.over{border-color:var(--teal);background:var(--teal-soft)}
+.drop strong{display:block;font-size:16px}
+.drop span{font-size:13px;color:var(--ink-2)}
+.drop input{display:none}
+.docname{font-weight:600;word-break:break-word}
+.badge{display:inline-block;font-size:12px;padding:1px 8px;border-radius:99px;background:var(--marker);color:var(--marker-ink);font-weight:600;margin-inline-start:6px;vertical-align:middle}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.stat{background:var(--paper);border-radius:8px;padding:8px;text-align:center}
+.stat b{display:block;font-family:var(--mono);font-size:18px;font-variant-numeric:tabular-nums}
+.stat small{color:var(--ink-2);font-size:12px}
+.lbl{font-size:12px;color:var(--ink-2);letter-spacing:.02em;font-weight:600;margin-bottom:6px}
+.pages{display:flex;align-items:flex-end;gap:2px;height:46px;direction:ltr}
+.pages i{flex:1;min-width:2px;background:var(--teal);opacity:.55;border-radius:2px 2px 0 0;cursor:pointer}
+.pages i:hover{opacity:1}
+.ctrls{display:grid;gap:10px}
+.ctrls label{display:grid;gap:4px;font-size:13px;color:var(--ink-2)}
+select{background:var(--paper);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:6px 8px}
+.btn{border:0;border-radius:8px;padding:9px 14px;cursor:pointer;background:var(--teal);color:var(--sheet);font-weight:600}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn.ghost{background:transparent;color:var(--teal);border:1px solid var(--line)}
+.btn.small{padding:5px 10px;font-size:13px}
+.status{font-size:13px;color:var(--ink-2);min-height:1.4em}
+.status.err{color:var(--bad)}
+.progress{height:4px;background:var(--line);border-radius:4px;overflow:hidden}
+.progress div{height:100%;width:0;background:var(--teal);transition:width .2s}
+
+.main{min-width:0}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--line);overflow-x:auto;margin-bottom:16px}
+.tab{background:none;border:0;padding:10px 14px;cursor:pointer;color:var(--ink-2);font-weight:600;border-bottom:3px solid transparent;white-space:nowrap}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--marker)}
+.view{display:flex;flex-direction:column;gap:16px}
+.card{padding:18px 20px;min-width:0}
+.card h2{font-family:var(--display);font-size:20px;font-weight:500;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.card h3{font-size:16px;margin-bottom:6px}
+.summary{font-size:16.5px;max-width:68ch;margin:0}
+.points{margin:0;padding-inline-start:20px;display:grid;gap:6px;max-width:72ch}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px}
+.bars{display:grid;gap:8px}
+.bar{display:grid;grid-template-columns:minmax(80px,140px) minmax(0,1fr) 40px;align-items:center;gap:10px;font-size:14px}
+.bar .t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar .track{height:12px;background:var(--paper);border-radius:6px;overflow:hidden}
+.bar .fill{height:100%;background:var(--teal);border-radius:6px}
+.bar .n{font-family:var(--mono);font-size:13px;color:var(--ink-2);font-variant-numeric:tabular-nums;text-align:end}
+.pchips{display:flex;gap:4px;flex-wrap:wrap;margin-top:2px}
+.pchip{font-family:var(--mono);font-size:11px;border:1px solid var(--line);border-radius:4px;padding:0 5px;color:var(--ink-2)}
+dl.terms{margin:0;display:grid;gap:10px}
+dl.terms dt{font-weight:700}
+dl.terms dd{margin:0;color:var(--ink-2)}
+.nums{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.num{background:var(--paper);border-radius:8px;padding:12px}
+.num b{display:block;font-family:var(--mono);font-size:22px;color:var(--teal);font-variant-numeric:tabular-nums}
+.num span{font-size:13px;color:var(--ink-2)}
+
+/* mind map */
+.mm{display:flex;flex-direction:column;align-items:center;gap:0}
+.mm-center{background:var(--ink);color:var(--sheet);font-family:var(--display);font-size:19px;padding:12px 22px;border-radius:12px;text-align:center;max-width:90%}
+.mm-stem{width:2px;height:22px;background:var(--line)}
+.mm-branches{width:100%;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;border-top:2px solid var(--line);padding-top:22px;position:relative}
+.mm-b{position:relative;border:1px solid var(--line);border-radius:var(--r);padding:12px 14px;background:var(--sheet);min-width:0}
+.mm-b::before{content:"";position:absolute;top:-23px;inset-inline-start:50%;width:2px;height:22px;background:var(--line)}
+.mm-b h3{color:var(--c);font-size:16px;padding-bottom:6px;border-bottom:3px solid var(--c);margin-bottom:8px}
+.mm-b ul{margin:0;padding-inline-start:18px;display:grid;gap:4px;font-size:14px}
+.flow{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.step{display:flex;gap:8px;align-items:baseline;background:var(--paper);border-radius:8px;padding:8px 12px;max-width:100%}
+.step b{font-family:var(--mono);color:var(--teal)}
+.arrow{color:var(--ink-2)}
+
+/* quiz */
+.qhead{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.score{font-family:var(--mono);font-variant-numeric:tabular-nums;font-size:15px}
+.scorebar{height:8px;background:var(--paper);border-radius:8px;overflow:hidden;display:flex;margin-top:8px}
+.scorebar .g{background:var(--good)} .scorebar .x{background:var(--bad)}
+.q{padding:16px 20px}
+.q .qn{font-family:var(--mono);font-size:12px;color:var(--ink-2)}
+.q p.qt{font-weight:600;font-size:16px;margin:2px 0 10px}
+.opts{display:grid;gap:8px}
+.opt{display:flex;gap:10px;align-items:flex-start;text-align:start;background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:9px 12px;cursor:pointer;color:var(--ink)}
+.opt:hover:not(:disabled){border-color:var(--teal)}
+.opt:disabled{cursor:default}
+.opt .k{font-family:var(--mono);font-weight:600;color:var(--ink-2);min-width:1.2em}
+.opt.right{background:var(--good-soft);border-color:var(--good)}
+.opt.wrong{background:var(--bad-soft);border-color:var(--bad)}
+.explain{margin-top:10px;font-size:14px;color:var(--ink-2);border-inline-start:3px solid var(--marker);padding-inline-start:10px}
+
+.reader{display:flex;flex-direction:column;gap:10px}
+.reader .pg{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.reader pre{white-space:pre-wrap;word-break:break-word;font-family:var(--body);background:var(--paper);border-radius:8px;padding:14px;margin:0;max-height:60vh;overflow:auto;font-size:14.5px}
+.note{font-size:13px;color:var(--ink-2)}
+.empty{color:var(--ink-2);font-size:14px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap" dir="rtl" lang="ar">
+  <header class="top">
+    <div class="brand">
+      <h1>مُذاكِر PDF</h1>
+      <p>ارفع ملفك، واحصل على ملخص وخريطة ذهنية وأسئلة اختيار من متعدد.</p>
+    </div>
+    <div class="engine"><span class="dot" id="engDot"></span><span id="engTxt">جارٍ التحقق من Claude…</span></div>
+  </header>
+
+  <div class="grid">
+    <aside class="panel rail">
+      <label class="drop" id="drop" for="file">
+        <input type="file" id="file" accept="application/pdf,.pdf">
+        <strong>اسحب ملف PDF هنا</strong>
+        <span>أو اضغط للاختيار · تتم القراءة داخل متصفحك</span>
+      </label>
+      <div class="progress" hidden id="prog"><div id="progBar"></div></div>
+      <div class="status" id="status"></div>
+
+      <div>
+        <div class="lbl">المستند الحالي</div>
+        <div class="docname" id="docName"></div>
+      </div>
+      <div class="stats">
+        <div class="stat"><b id="sPages">0</b><small>صفحة</small></div>
+        <div class="stat"><b id="sWords">0</b><small>كلمة</small></div>
+        <div class="stat"><b id="sMins">0</b><small>دقيقة قراءة</small></div>
+      </div>
+      <div>
+        <div class="lbl">كثافة النص لكل صفحة</div>
+        <div class="pages" id="pageBars" aria-label="عدد الكلمات لكل صفحة"></div>
+      </div>
+
+      <div class="ctrls">
+        <label for="lang">لغة النتائج
+          <select id="lang"><option value="ar">العربية</option><option value="en">English</option></select>
+        </label>
+        <label for="qCount">عدد الأسئلة
+          <select id="qCount"><option>5</option><option selected>10</option><option>15</option><option>20</option></select>
+        </label>
+        <label for="qLevel">مستوى الصعوبة
+          <select id="qLevel"><option value="easy">سهل</option><option value="medium" selected>متوسط</option><option value="hard">صعب</option></select>
+        </label>
+        <button class="btn" id="btnAnalyze">حلّل المستند</button>
+        <button class="btn ghost" id="btnQuiz">أنشئ الأسئلة</button>
+        <p class="note" id="engNote"></p>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="tabs" role="tablist">
+        <button class="tab" role="tab" id="t-sum" aria-selected="true" data-v="v-sum">الملخص والتحليل</button>
+        <button class="tab" role="tab" id="t-map" aria-selected="false" data-v="v-map">التلخيص البصري</button>
+        <button class="tab" role="tab" id="t-quiz" aria-selected="false" data-v="v-quiz">الأسئلة</button>
+        <button class="tab" role="tab" id="t-text" aria-selected="false" data-v="v-text">النص المستخرج</button>
+      </div>
+
+      <section class="view" id="v-sum"></section>
+      <section class="view" id="v-map" hidden></section>
+      <section class="view" id="v-quiz" hidden></section>
+      <section class="view" id="v-text" hidden></section>
+    </main>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js"></script>
+<script>
+(function(){
+document.documentElement.setAttribute("dir","rtl");
+document.documentElement.setAttribute("lang","ar");
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fmt = n => Number(n).toLocaleString("ar-EG");
+const MAX_CHARS = 80000;
+
+/* ---------- sample document (shown until the viewer uploads a file) ---------- */
+const SAMPLE_PAGES = [
+"اعتلال الشبكية السكري هو أحد أكثر مضاعفات داء السكري شيوعاً، وهو السبب الرئيسي لفقدان البصر لدى البالغين في سن العمل. ينتج المرض عن تلف الأوعية الدموية الدقيقة في الشبكية بسبب ارتفاع مستوى السكر في الدم لفترات طويلة. تشير التقديرات إلى أن نحو ثلث مرضى السكري يعانون من درجة ما من اعتلال الشبكية.",
+"يمر اعتلال الشبكية السكري بمرحلتين رئيسيتين: المرحلة غير التكاثرية والمرحلة التكاثرية. في المرحلة غير التكاثرية تظهر تمددات وعائية دقيقة ونزف نقطي وإفرازات صلبة. أما المرحلة التكاثرية فتتميز بنمو أوعية دموية جديدة هشة على سطح الشبكية، وقد تنزف داخل الجسم الزجاجي وتسبب انفصال الشبكية.",
+"يعتمد التشخيص على فحص قاع العين بعد توسيع الحدقة، والتصوير الفوتوغرافي لقاع العين، والتصوير المقطعي البصري OCT لقياس سماكة البقعة. وقد أظهرت نماذج التعلم العميق دقة عالية في تصنيف صور قاع العين، إذ تجاوزت الحساسية 90% في عدة دراسات، مما يجعل الفحص الآلي خياراً واعداً في برامج المسح الواسعة.",
+"يشمل العلاج ضبط مستوى السكر وضغط الدم، والعلاج بالليزر الضوئي، وحقن مضادات عامل نمو بطانة الأوعية VEGF داخل العين، والجراحة الزجاجية في الحالات المتقدمة. ويوصى بأن يخضع مرضى السكري لفحص الشبكية مرة واحدة سنوياً على الأقل، لأن الاكتشاف المبكر يقلل خطر فقدان البصر الشديد بنسبة تصل إلى 95%."
+];
+const SAMPLE_ANALYSIS = {
+  title:"اعتلال الشبكية السكري: المراحل والتشخيص والعلاج",
+  summary:"يتناول المستند اعتلال الشبكية السكري بوصفه السبب الرئيسي لفقدان البصر لدى البالغين في سن العمل، وينشأ عن تلف الأوعية الدقيقة في الشبكية بفعل ارتفاع السكر المزمن. يميّز بين المرحلة غير التكاثرية والمرحلة التكاثرية، ويعرض وسائل التشخيص من فحص قاع العين إلى OCT ونماذج التعلم العميق. ويختم بخيارات العلاج وأهمية الفحص السنوي في منع فقدان البصر.",
+  key_points:[
+    "نحو ثلث مرضى السكري لديهم درجة من اعتلال الشبكية.",
+    "المرحلة التكاثرية أخطر لأنها تشمل نمو أوعية جديدة هشة قابلة للنزف.",
+    "التصوير المقطعي OCT يقيس سماكة البقعة ويكشف الوذمة.",
+    "نماذج التعلم العميق تجاوزت حساسيتها 90% في تصنيف صور قاع العين.",
+    "الاكتشاف المبكر يقلل خطر فقدان البصر الشديد حتى 95%."
+  ],
+  topics:[{name:"تعريف المرض وأسبابه",pages:[1],weight:3},{name:"مراحل المرض",pages:[2],weight:5},{name:"وسائل التشخيص والذكاء الاصطناعي",pages:[3],weight:4},{name:"العلاج والوقاية",pages:[4],weight:4}],
+  mindmap:{center:"اعتلال الشبكية السكري",branches:[
+    {label:"السبب",children:["ارتفاع السكر المزمن","تلف الأوعية الدقيقة"]},
+    {label:"المراحل",children:["غير تكاثرية: تمددات ونزف نقطي","تكاثرية: أوعية جديدة هشة"]},
+    {label:"التشخيص",children:["فحص قاع العين","التصوير المقطعي OCT","التعلم العميق"]},
+    {label:"العلاج",children:["ضبط السكر والضغط","الليزر الضوئي","حقن مضادات VEGF","الجراحة الزجاجية"]},
+    {label:"الوقاية",children:["فحص سنوي للشبكية","الاكتشاف المبكر"]}
+  ]},
+  terms:[{term:"المرحلة التكاثرية",definition:"مرحلة متقدمة تنمو فيها أوعية دموية جديدة هشة على سطح الشبكية."},{term:"OCT",definition:"تصوير مقطعي بصري يقيس سماكة طبقات الشبكية والبقعة."},{term:"VEGF",definition:"عامل نمو بطانة الأوعية؛ تُحقن مضاداته داخل العين لإيقاف نمو الأوعية الجديدة."}],
+  numbers:[{value:"⅓",label:"من مرضى السكري مصابون بدرجة ما"},{value:"> 90%",label:"حساسية نماذج التعلم العميق"},{value:"95%",label:"انخفاض خطر فقدان البصر مع الاكتشاف المبكر"},{value:"1×",label:"فحص سنوي على الأقل"}],
+  steps:["ارتفاع السكر المزمن","تلف الأوعية الدقيقة","تمددات ونزف (غير تكاثرية)","أوعية جديدة هشة (تكاثرية)","نزف زجاجي وانفصال الشبكية"]
+};
+const SAMPLE_QUIZ = [
+  {q:"ما السبب الرئيسي لاعتلال الشبكية السكري؟",options:["التهاب العصب البصري","تلف الأوعية الدقيقة في الشبكية بسبب ارتفاع السكر","ارتفاع ضغط العين","نقص فيتامين أ"],answer:1,explain:"ينتج المرض عن تلف الأوعية الدموية الدقيقة بفعل ارتفاع السكر لفترات طويلة.",page:1},
+  {q:"ما الذي يميز المرحلة التكاثرية؟",options:["الإفرازات الصلبة فقط","نمو أوعية دموية جديدة هشة","تمددات وعائية دقيقة فقط","غياب أي نزف"],answer:1,explain:"المرحلة التكاثرية تتميز بنمو أوعية جديدة هشة قد تنزف داخل الجسم الزجاجي.",page:2},
+  {q:"أي وسيلة تُستخدم لقياس سماكة البقعة؟",options:["تخطيط كهربية الشبكية","قياس حدة البصر","التصوير المقطعي البصري OCT","قياس ضغط العين"],answer:2,explain:"يستخدم OCT لقياس سماكة البقعة وكشف الوذمة.",page:3},
+  {q:"كم مرة يُوصى بفحص الشبكية لمرضى السكري؟",options:["مرة سنوياً على الأقل","كل خمس سنوات","عند ظهور الأعراض فقط","مرة واحدة عند التشخيص"],answer:0,explain:"يوصى بالفحص مرة سنوياً على الأقل لأن الاكتشاف المبكر يقلل الخطر حتى 95%.",page:4}
+];
+
+/* ---------- state ---------- */
+const S = { name:"مثال: اعتلال الشبكية السكري", isSample:true, pages:SAMPLE_PAGES.slice(), analysis:SAMPLE_ANALYSIS, analysisSrc:"sample", quiz:SAMPLE_QUIZ, quizSrc:"sample", answers:{}, readPage:1 };
+let sample = null, downloads = null, busy = false;
+
+/* ---------- local text analysis (works without Claude) ---------- */
+const STOP = new Set(("في من على إلى الى عن مع هذا هذه ذلك تلك التي الذي الذين اللذين ما ماذا لا لم لن ثم أو او أن ان إن كان كانت يكون تكون قد كل بعض بين عند حتى إذا اذا كما أي اي هو هي هم هن نحن أنا انا له لها لهم به بها فيه فيها منه منها عليه عليها وقد وهو وهي وفي ومن وعلى وأن وان ولا وما أكثر اكثر أيضا ايضا مثل غير بعد قبل خلال حيث لدى نحو مما الى وهذا وهذه تم يتم أحد احد كما فقط ذات ضمن عبر "+
+"the a an and or of to in on for with by is are was were be been being this that these those it its as at from which who whom whose not no but if then than so such can could may might will would should shall do does did has have had into over under about between their there they them we our you your he she his her i me my also more most other some any each all both only very same up out what when where how why").split(/\s+/));
+function wordsOf(t){ return (t.match(/[\p{L}\p{N}][\p{L}\p{N}\p{M}'-]*/gu) || []); }
+function norm(w){ return w.toLowerCase().replace(/[ً-ْـ]/g,""); }
+function keywords(pages, n=12){
+  const f = new Map();
+  pages.forEach((p,i)=>{ for(const w0 of wordsOf(p)){ const w = norm(w0); if(w.length<3 || STOP.has(w) || /^\d+$/.test(w)) continue;
+    const e = f.get(w) || {w:w0,c:0,pages:new Set()}; e.c++; e.pages.add(i+1); f.set(w,e);} });
+  return [...f.values()].sort((a,b)=>b.c-a.c).slice(0,n).map(e=>({term:e.w,count:e.c,pages:[...e.pages]}));
+}
+function sentences(pages){
+  const out=[]; pages.forEach((p,i)=>{ p.replace(/\s+/g," ").split(/(?<=[.!?؟])\s+/).forEach(s=>{ s=s.trim(); if(wordsOf(s).length>=6 && s.length<400) out.push({s,page:i+1}); }); });
+  return out;
+}
+function localAnalysis(pages){
+  const kw = keywords(pages, 15), score = new Map(kw.map(k=>[norm(k.term),k.count]));
+  const sents = sentences(pages).map((x,idx)=>{ const ws = wordsOf(x.s); let sc=0; ws.forEach(w=>sc+=score.get(norm(w))||0); return {...x,idx,sc:sc/Math.sqrt(ws.length)}; });
+  const top = [...sents].sort((a,b)=>b.sc-a.sc).slice(0,8);
+  const summ = top.slice(0,4).sort((a,b)=>a.idx-b.idx).map(x=>x.s).join(" ");
+  const branches = kw.slice(0,6).map(k=>({label:k.term,children:sents.filter(x=>x.s.includes(k.term)).slice(0,3).map(x=>x.s.length>90?x.s.slice(0,88)+"…":x.s)}));
+  return { title:S.name, summary:summ || "لم يُعثر على جمل كافية لتكوين ملخص.", key_points:top.slice(4,8).map(x=>x.s),
+    topics:kw.slice(0,6).map(k=>({name:k.term,pages:k.pages.slice(0,12),weight:Math.max(1,Math.round(5*k.count/kw[0].count))})),
+    mindmap:{center:S.name.replace(/\.pdf$/i,""),branches}, terms:[], numbers:[], steps:[] };
+}
+function localQuiz(pages, count){
+  const kw = keywords(pages, 30).map(k=>k.term); const sents = sentences(pages); const used = new Set(); const qs=[];
+  for(const x of sents){ if(qs.length>=count) break;
+    const hit = kw.find(k=>x.s.includes(k) && !used.has(k)); if(!hit) continue;
+    const distract = kw.filter(k=>k!==hit).sort(()=>Math.random()-.5).slice(0,3); if(distract.length<3) break;
+    used.add(hit); const opts=[hit,...distract].sort(()=>Math.random()-.5);
+    qs.push({q:"أكمل الفراغ: «"+x.s.replace(hit,"_____")+"»",options:opts,answer:opts.indexOf(hit),explain:"الكلمة الصحيحة واردة في نص الصفحة "+x.page+".",page:x.page}); }
+  return qs;
+}
+
+/* ---------- rendering ---------- */
+function srcLabel(src){ return src==="sample" ? '<span class="badge">مثال</span>' : src==="local" ? '<span class="badge">تحليل محلي</span>' : ""; }
+function renderDoc(){
+  const words = S.pages.reduce((a,p)=>a+wordsOf(p).length,0);
+  $("docName").innerHTML = esc(S.name) + (S.isSample ? '<span class="badge">مثال</span>' : "");
+  $("sPages").textContent = fmt(S.pages.length); $("sWords").textContent = fmt(words); $("sMins").textContent = fmt(Math.max(1,Math.round(words/200)));
+  const counts = S.pages.map(p=>wordsOf(p).length), mx = Math.max(1,...counts);
+  $("pageBars").innerHTML = counts.map((c,i)=>`<i style="height:${Math.max(4,c/mx*100)}%" title="صفحة ${i+1}: ${c} كلمة" data-p="${i+1}"></i>`).join("");
+}
+function renderSummary(){
+  const a = S.analysis, kw = keywords(S.pages, 10), mx = kw[0]?.count || 1;
+  if(!a){ $("v-sum").innerHTML = `<div class="panel card"><p class="empty">اضغط «حلّل المستند» لإنشاء الملخص.</p></div>`; return; }
+  const tmax = Math.max(1,...(a.topics||[]).map(t=>+t.weight||1));
+  $("v-sum").innerHTML = `
+  <div class="panel card">
+    <h2><span>${esc(a.title || S.name)} ${srcLabel(S.analysisSrc)}</span><button class="btn ghost small" id="copySum">نسخ الملخص</button></h2>
+    <p class="summary">${highlight(a.summary, kw)}</p>
+  </div>
+  ${(a.key_points||[]).length ? `<div class="panel card"><h2>النقاط الرئيسية</h2><ul class="points">${a.key_points.map(p=>`<li>${highlight(p,kw)}</li>`).join("")}</ul></div>` : ""}
+  ${(a.numbers||[]).length ? `<div class="panel card"><h2>أرقام بارزة</h2><div class="nums">${a.numbers.map(n=>`<div class="num"><b>${esc(n.value)}</b><span>${esc(n.label)}</span></div>`).join("")}</div></div>` : ""}
+  <div class="two">
+    ${(a.topics||[]).length ? `<div class="panel card"><h2>المحاور ووزنها في النص</h2><div class="bars">${a.topics.map(t=>`
+      <div><div class="bar"><span class="t" title="${esc(t.name)}">${esc(t.name)}</span><div class="track"><div class="fill" style="width:${(+t.weight||1)/tmax*100}%"></div></div><span class="n">${esc(t.weight)}/5</span></div>
+      <div class="pchips">${(t.pages||[]).map(p=>`<span class="pchip">ص ${esc(p)}</span>`).join("")}</div></div>`).join("")}</div></div>` : ""}
+    <div class="panel card"><h2>أكثر الكلمات تكراراً</h2><div class="bars">${kw.map(k=>`
+      <div class="bar"><span class="t" title="${esc(k.term)}">${esc(k.term)}</span><div class="track"><div class="fill" style="width:${k.count/mx*100}%"></div></div><span class="n">${fmt(k.count)}</span></div>`).join("") || '<p class="empty">لا توجد كلمات كافية.</p>'}</div>
+      <p class="note">محسوبة مباشرة من نص الملف بعد حذف أدوات الربط.</p></div>
+  </div>
+  ${(a.terms||[]).length ? `<div class="panel card"><h2>مصطلحات أساسية</h2><dl class="terms">${a.terms.map(t=>`<div><dt>${esc(t.term)}</dt><dd>${esc(t.definition)}</dd></div>`).join("")}</dl></div>` : ""}`;
+  $("copySum").onclick = () => { const txt = (a.title||"")+"\n\n"+a.summary+"\n\n"+(a.key_points||[]).map(p=>"• "+p).join("\n");
+    navigator.clipboard.writeText(txt).then(()=>setStatus("تم نسخ الملخص.")).catch(()=>setStatus("تعذّر النسخ؛ حدّد النص وانسخه يدوياً.",true)); };
+}
+function highlight(text, kw){
+  let h = esc(text); kw.slice(0,5).forEach(k=>{ const t = esc(k.term); if(t.length<3) return; h = h.split(t).join(`<mark>${t}</mark>`); }); return h;
+}
+function renderMap(){
+  const a = S.analysis; if(!a){ $("v-map").innerHTML = `<div class="panel card"><p class="empty">اضغط «حلّل المستند» لرسم الخريطة.</p></div>`; return; }
+  const m = a.mindmap || {center:a.title,branches:[]}, cols=["--b1","--b2","--b3","--b4","--b5","--b6"];
+  $("v-map").innerHTML = `
+  <div class="panel card">
+    <h2><span>الخريطة الذهنية ${srcLabel(S.analysisSrc)}</span></h2>
+    <div class="mm">
+      <div class="mm-center">${esc(m.center || a.title)}</div>
+      <div class="mm-stem"></div>
+      <div class="mm-branches">${(m.branches||[]).map((b,i)=>`
+        <div class="mm-b" style="--c:var(${cols[i%cols.length]})"><h3>${esc(b.label)}</h3><ul>${(b.children||[]).map(c=>`<li>${esc(c)}</li>`).join("")}</ul></div>`).join("")}</div>
+    </div>
+  </div>
+  ${(a.steps||[]).length ? `<div class="panel card"><h2>التسلسل</h2><div class="flow">${a.steps.map((s,i)=>`${i?'<span class="arrow" aria-hidden="true">←</span>':""}<div class="step"><b>${fmt(i+1)}</b><span>${esc(s)}</span></div>`).join("")}</div></div>` : ""}
+  ${(a.numbers||[]).length ? `<div class="panel card"><h2>بطاقات الأرقام</h2><div class="nums">${a.numbers.map(n=>`<div class="num"><b>${esc(n.value)}</b><span>${esc(n.label)}</span></div>`).join("")}</div></div>` : ""}`;
+}
+function renderQuiz(){
+  const qs = S.quiz;
+  if(!qs || !qs.length){ $("v-quiz").innerHTML = `<div class="panel card"><p class="empty">اضغط «أنشئ الأسئلة» لتوليد اختبار من المستند.</p></div>`; return; }
+  const done = Object.keys(S.answers).length, right = qs.filter((q,i)=>S.answers[i]===q.answer).length;
+  $("v-quiz").innerHTML = `
+  <div class="panel card">
+    <div class="qhead"><h2 style="margin:0">اختبار من ${fmt(qs.length)} أسئلة ${srcLabel(S.quizSrc)}</h2>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn ghost small" id="qReset">إعادة الاختبار</button><button class="btn ghost small" id="qReveal">إظهار الإجابات</button><button class="btn ghost small" id="qSave" ${downloads?"":"hidden"}>حفظ الأسئلة</button></div></div>
+    <div class="score" style="margin-top:8px">الدرجة: ${fmt(right)} / ${fmt(qs.length)} · أُجيب ${fmt(done)}</div>
+    <div class="scorebar"><div class="g" style="width:${right/qs.length*100}%"></div><div class="x" style="width:${(done-right)/qs.length*100}%"></div></div>
+  </div>
+  ${qs.map((q,i)=>{ const a = S.answers[i], answered = a!==undefined;
+    return `<div class="panel q"><div class="qn">سؤال ${fmt(i+1)}${q.page?` · صفحة ${fmt(q.page)}`:""}</div><p class="qt">${esc(q.q)}</p>
+    <div class="opts">${q.options.map((o,j)=>{ let cls=""; if(answered){ if(j===q.answer) cls="right"; else if(j===a) cls="wrong"; }
+      return `<button class="opt ${cls}" data-q="${i}" data-o="${j}" ${answered?"disabled":""}><span class="k">${"أبجد"[j]||j+1}</span><span>${esc(o)}</span></button>`; }).join("")}</div>
+    ${answered && q.explain ? `<div class="explain">${esc(q.explain)}</div>`:""}</div>`; }).join("")}`;
+  $("v-quiz").querySelectorAll(".opt").forEach(b=>b.onclick=()=>{ S.answers[+b.dataset.q] = +b.dataset.o; renderQuiz(); });
+  $("qReset").onclick = ()=>{ S.answers={}; renderQuiz(); };
+  $("qReveal").onclick = ()=>{ qs.forEach((q,i)=>{ if(S.answers[i]===undefined) S.answers[i]=q.answer; }); renderQuiz(); };
+  $("qSave").onclick = async ()=>{
+    const txt = qs.map((q,i)=>`${i+1}. ${q.q}\n${q.options.map((o,j)=>`   ${"أبجد"[j]}) ${o}`).join("\n")}\n   الإجابة: ${"أبجد"[q.answer]}) ${q.options[q.answer]}\n   ${q.explain||""}`).join("\n\n");
+    try{ await downloads.save({filename:(S.name.replace(/\.pdf$/i,"")||"quiz")+" - أسئلة.txt", data:txt}); setStatus("تم حفظ الأسئلة."); }
+    catch(e){ setStatus("لم يتم الحفظ.", true); }
+  };
+}
+function renderText(){
+  const n = S.pages.length, p = Math.min(Math.max(1,S.readPage),n||1), txt = S.pages[p-1] || "";
+  $("v-text").innerHTML = `<div class="panel card reader">
+    <h2>النص المستخرج</h2>
+    <div class="pg"><button class="btn ghost small" id="pPrev" ${p<=1?"disabled":""}>السابقة</button>
+      <label for="pSel" class="note">صفحة</label><select id="pSel">${S.pages.map((_,i)=>`<option value="${i+1}" ${i+1===p?"selected":""}>${fmt(i+1)}</option>`).join("")}</select>
+      <span class="note">من ${fmt(n)} · ${fmt(wordsOf(txt).length)} كلمة</span>
+      <button class="btn ghost small" id="pNext" ${p>=n?"disabled":""}>التالية</button></div>
+    <pre dir="auto">${esc(txt) || '<span class="empty">لا يوجد نص في هذه الصفحة (قد تكون صورة ممسوحة).</span>'}</pre></div>`;
+  $("pPrev").onclick=()=>{S.readPage=p-1;renderText();}; $("pNext").onclick=()=>{S.readPage=p+1;renderText();};
+  $("pSel").onchange=e=>{S.readPage=+e.target.value;renderText();};
+}
+function renderAll(){ renderDoc(); renderSummary(); renderMap(); renderQuiz(); renderText(); }
+
+/* ---------- tabs ---------- */
+function showTab(id){ document.querySelectorAll(".tab").forEach(t=>{ const on = t.dataset.v===id; t.setAttribute("aria-selected",on); $(t.dataset.v).hidden=!on; }); try{localStorage.setItem("pdfstudy.tab",id);}catch(e){} }
+document.querySelectorAll(".tab").forEach(t=>t.onclick=()=>showTab(t.dataset.v));
+try{ const t = localStorage.getItem("pdfstudy.tab"); if(t && $(t)) showTab(t); }catch(e){}
+$("pageBars").onclick = e => { const p = e.target.dataset?.p; if(p){ S.readPage=+p; renderText(); showTab("v-text"); } };
+
+/* ---------- status ---------- */
+function setStatus(msg, err){ $("status").textContent = msg||""; $("status").className = "status"+(err?" err":""); }
+function setProg(f){ $("prog").hidden = f==null; $("progBar").style.width = ((f||0)*100)+"%"; }
+
+/* ---------- PDF loading ---------- */
+if(window.pdfjsLib){ pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js"; }
+async function loadPdf(file){
+  if(!file) return;
+  if(!/pdf$/i.test(file.type) && !/\.pdf$/i.test(file.name)){ setStatus("الملف ليس PDF. اختر ملفاً بامتداد ‎.pdf‎.", true); return; }
+  if(!window.pdfjsLib){ setStatus("تعذّر تحميل قارئ PDF. أعد تحميل الصفحة.", true); return; }
+  setStatus("جارٍ فتح الملف…"); setProg(0);
+  try{
+    const buf = await file.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({data:new Uint8Array(buf), isEvalSupported:false}).promise;
+    const pages=[];
+    for(let i=1;i<=pdf.numPages;i++){
+      const pg = await pdf.getPage(i), tc = await pg.getTextContent();
+      pages.push(tc.items.map(it=>it.str+(it.hasEOL?"\n":" ")).join("").replace(/[ \t]+/g," ").trim());
+      setStatus(`قراءة الصفحة ${fmt(i)} من ${fmt(pdf.numPages)}…`); setProg(i/pdf.numPages);
+    }
+    const words = pages.reduce((a,p)=>a+wordsOf(p).length,0);
+    Object.assign(S,{name:file.name,isSample:false,pages,analysis:null,quiz:null,answers:{},readPage:1});
+    setProg(null);
+    if(words<30){ setStatus("لم يُعثر على نص قابل للقراءة. يبدو أن الملف صور ممسوحة ضوئياً بدون طبقة نص.", true); renderAll(); return; }
+    setStatus(`تمت قراءة ${fmt(pages.length)} صفحة.`);
+    renderAll(); analyze();
+  }catch(e){ setProg(null); setStatus(e?.name==="PasswordException" ? "الملف محمي بكلمة مرور. افتح الحماية ثم ارفعه مجدداً." : "تعذّرت قراءة الملف. تأكد أنه PDF سليم.", true); }
+}
+$("file").onchange = e => loadPdf(e.target.files[0]);
+const drop = $("drop");
+["dragenter","dragover"].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add("over");}));
+["dragleave","drop"].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove("over");}));
+drop.addEventListener("drop",e=>loadPdf(e.dataTransfer.files[0]));
+
+/* ---------- Claude ---------- */
+function docText(){
+  let out="", used=0;
+  for(let i=0;i<S.pages.length;i++){ const chunk = `\n[صفحة ${i+1}]\n`+S.pages[i]; if(out.length+chunk.length>MAX_CHARS) break; out+=chunk; used=i+1; }
+  return {text:out, used};
+}
+const langName = () => $("lang").value==="en" ? "English" : "Arabic (العربية الفصحى)";
+function errMsg(e){
+  return ({not_granted:"لم يُسمح باستخدام Claude؛ تم استخدام التحليل المحلي.",sampling_disabled:"Claude غير متاح لهذا الحساب؛ تم استخدام التحليل المحلي.",
+    rate_limited:"تم تجاوز حد الاستخدام مؤقتاً. حاول لاحقاً.",prompt_too_large:"المستند أطول من المسموح.",invalid_json:"وصل رد غير مكتمل. اضغط الزر مرة أخرى.",
+    refused:"رفض Claude معالجة هذا المحتوى.",session_expired:"انتهت الجلسة؛ سجّل الدخول مجدداً."})[e?.code] || "حدث خطأ في الاتصال. اضغط الزر مرة أخرى.";
+}
+function setBusy(b){ busy=b; $("btnAnalyze").disabled=b; $("btnQuiz").disabled=b; }
+
+async function analyze(){
+  if(busy) return;
+  if(!sample){ S.analysis = localAnalysis(S.pages); S.analysisSrc="local"; renderSummary(); renderMap(); return; }
+  const {text, used} = docText(); setBusy(true); setStatus("Claude يقرأ المستند ويفكر…");
+  const prompt = `You are a study assistant. Analyze the document below and reply with ONLY one JSON object, all text values written in ${langName()}.
+Shape:
+{"title": string (a clear title for the document),
+ "summary": string (4-6 sentences),
+ "key_points": [string] (5-8 items),
+ "topics": [{"name": string, "pages": [int], "weight": int 1-5 (share of the document)}] (3-7 items),
+ "mindmap": {"center": string (short), "branches": [{"label": string (1-4 words), "children": [string (under 10 words)]}]} (4-6 branches, 2-5 children each),
+ "terms": [{"term": string, "definition": string}] (up to 8),
+ "numbers": [{"value": string, "label": string}] (important figures stated in the text only; [] if none),
+ "steps": [string] (a real process or sequence described in the text, 3-7 items; [] if none)}
+Use only facts from the document. Page numbers come from the [صفحة N] markers.
+
+Document "${S.name}" (pages 1-${used} of ${S.pages.length}):
+${text}`;
+  try{
+    const r = await sample.json(prompt, {onText:({text})=>setStatus(`Claude يكتب التحليل… ${fmt(text.length)} حرف`)});
+    if(!r || typeof r!=="object" || !r.summary) throw {code:"invalid_json"};
+    S.analysis = r; S.analysisSrc="claude"; setStatus(used<S.pages.length ? `تم التحليل (أول ${fmt(used)} صفحة بسبب الطول).` : "تم التحليل.");
+  }catch(e){
+    if(e?.code==="not_granted"||e?.code==="sampling_disabled"){ sample=null; setEngine(false); }
+    if(!S.analysis || S.analysisSrc!=="claude"){ S.analysis = localAnalysis(S.pages); S.analysisSrc="local"; }
+    setStatus(errMsg(e), true);
+  }finally{ setBusy(false); renderSummary(); renderMap(); }
+}
+async function makeQuiz(){
+  if(busy) return;
+  const count = +$("qCount").value, level = $("qLevel").value;
+  S.answers = {};
+  if(!sample){ S.quiz = localQuiz(S.pages, count); S.quizSrc="local"; renderQuiz(); showTab("v-quiz");
+    if(!S.quiz.length) setStatus("النص غير كافٍ لتوليد أسئلة محلياً.", true); return; }
+  const {text, used} = docText(); setBusy(true); showTab("v-quiz");
+  $("v-quiz").innerHTML = `<div class="panel card"><p class="empty" id="qWait">Claude يكتب ${fmt(count)} أسئلة…</p></div>`;
+  const prompt = `Write ${count} multiple-choice questions that test understanding of the document below. Difficulty: ${level}. Write every question, option and explanation in ${langName()}.
+Each question has exactly 4 options, one correct; distractors must be plausible. Spread questions across the whole document; prefer concepts, causes and comparisons over trivia. Vary the position of the correct option.
+Reply with ONLY a JSON array: [{"q": string, "options": [string,string,string,string], "answer": int 0-3, "explain": string (one sentence, why it is correct), "page": int}]
+
+Document "${S.name}" (pages 1-${used} of ${S.pages.length}):
+${text}`;
+  try{
+    const r = await sample.json(prompt, {cache:false, onText:({text})=>{ const w=$("qWait"); if(w) w.textContent=`Claude يكتب الأسئلة… ${fmt(text.length)} حرف`; }});
+    const qs = (Array.isArray(r)?r:[]).filter(q=>q && q.q && Array.isArray(q.options) && q.options.length>=2 && Number.isInteger(+q.answer) && +q.answer<q.options.length).map(q=>({...q,answer:+q.answer}));
+    if(!qs.length) throw {code:"invalid_json"};
+    S.quiz = qs; S.quizSrc="claude"; setStatus(`تم إنشاء ${fmt(qs.length)} سؤالاً.`);
+  }catch(e){
+    if(e?.code==="not_granted"||e?.code==="sampling_disabled"){ sample=null; setEngine(false); S.quiz = localQuiz(S.pages,count); S.quizSrc="local"; }
+    setStatus(errMsg(e), true);
+  }finally{ setBusy(false); renderQuiz(); }
+}
+$("btnAnalyze").onclick = analyze;
+$("btnQuiz").onclick = makeQuiz;
+
+function setEngine(on){
+  $("engDot").className = "dot"+(on?" on":"");
+  $("engTxt").textContent = on ? "التحليل الذكي بواسطة Claude" : "التحليل المحلي";
+  $("engNote").textContent = on ? "يُرسل نص المستند إلى Claude عند الضغط على الأزرار، ويُحتسب من استخدام حسابك."
+    : "Claude غير متاح هنا، لذلك يعمل الموقع بتحليل محلي أبسط: ملخص استخلاصي وأسئلة إكمال فراغ.";
+}
+
+renderAll();
+(async()=>{
+  try{ sample = await window.claude?.use?.("sample") || null; }catch(e){ sample=null; }
+  try{ downloads = await window.claude?.use?.("downloads") || null; }catch(e){ downloads=null; }
+  setEngine(!!sample); renderQuiz();
+})();
+})();
+</script>
+
+</body>
+</html>
+
