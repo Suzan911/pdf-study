@@ -73,6 +73,9 @@ header.top{display:flex;align-items:center;justify-content:space-between;gap:16p
 .ctrls{display:grid;gap:10px}
 .ctrls label{display:grid;gap:4px;font-size:13px;color:var(--ink-2)}
 .qbtns{display:grid;gap:6px}
+.access{display:flex;gap:8px;align-items:flex-end;background:var(--teal-soft);border-radius:8px;padding:10px}
+.access label{flex:1;min-width:0}
+.access input{width:100%;background:var(--sheet);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:6px 8px}
 select{background:var(--paper);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:6px 8px}
 .btn{border:0;border-radius:8px;padding:9px 14px;cursor:pointer;background:var(--teal);color:var(--sheet);font-weight:600}
 .btn:disabled{opacity:.5;cursor:not-allowed}
@@ -225,6 +228,12 @@ select{background:var(--paper);color:var(--ink);border:1px solid var(--line);bor
         <label for="lang">لغة النتائج
           <select id="lang"><option value="ar">العربية</option><option value="en">English</option></select>
         </label>
+        <div class="access" id="accessBox" hidden>
+          <label for="accessCode">رمز الدخول للتحليل الذكي
+            <input id="accessCode" type="password" autocomplete="off" dir="ltr">
+          </label>
+          <button class="btn ghost small" id="btnCode">تفعيل</button>
+        </div>
         <button class="btn" id="btnAnalyze">حلّل المستند</button>
         <label for="qCount">عدد الأسئلة
           <select id="qCount"><option>5</option><option selected>10</option><option>15</option><option>20</option></select>
@@ -267,6 +276,8 @@ const $ = id => document.getElementById(id);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const fmt = n => Number(n).toLocaleString("ar-EG");
 const MAX_CHARS = 80000;
+// Cloudflare Worker that calls Claude on the site owner's API key (outside claude.ai); empty = local analysis only
+const API_URL = "";
 const COLS = ["--b1","--b2","--b3","--b4","--b5","--b6"];
 const col = i => `var(${COLS[i%COLS.length]})`;
 const TYPES = {mcq:"اختيار من متعدد", tf:"صح أو خطأ", essay:"مقالي"};
@@ -568,11 +579,46 @@ const langName = () => $("lang").value==="en" ? "English" : "Arabic (العرب�
 function errMsg(e){
   return ({not_granted:"لم يُسمح باستخدام Claude؛ تم استخدام التحليل المحلي.",sampling_disabled:"Claude غير متاح لهذا الحساب؛ تم استخدام التحليل المحلي.",
     rate_limited:"تم تجاوز حد الاستخدام مؤقتاً. حاول لاحقاً.",prompt_too_large:"المستند أطول من المسموح.",invalid_json:"وصل رد غير مكتمل. اضغط الزر مرة أخرى.",
-    refused:"رفض Claude معالجة هذا المحتوى.",session_expired:"انتهت الجلسة؛ سجّل الدخول مجدداً."})[e?.code] || "حدث خطأ في الاتصال. اضغط الزر مرة أخرى.";
+    refused:"رفض Claude معالجة هذا المحتوى.",session_expired:"انتهت الجلسة؛ سجّل الدخول مجدداً.",
+    bad_code:"رمز الدخول غير صحيح؛ تم استخدام التحليل المحلي.",daily_limit:"انتهى عدد التحليلات المسموح به اليوم لهذا الرمز. حاول غداً."})[e?.code] || "حدث خطأ في الاتصال. اضغط الزر مرة أخرى.";
 }
+
+/* ---------- remote engine: the owner's Worker, used outside claude.ai ---------- */
+function parseJSON(text){
+  try{ return JSON.parse(text); }catch(e){}
+  const fence = text.match(/```(?:json)?\s*([\s\S]*?)```/); if(fence){ try{ return JSON.parse(fence[1]); }catch(e){} }
+  const a = text.search(/[\[{]/), b = Math.max(text.lastIndexOf("}"), text.lastIndexOf("]"));
+  if(a>=0 && b>a){ try{ return JSON.parse(text.slice(a,b+1)); }catch(e){} }
+  throw {code:"invalid_json"};
+}
+async function callWorker(payload){
+  let res;
+  try{ res = await fetch(API_URL, {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify(payload)}); }
+  catch(e){ throw {code:"upstream_error"}; }
+  const data = await res.json().catch(()=>({}));
+  if(res.ok) return data;
+  const err = data.error;
+  throw {code: err==="bad_code" ? "bad_code" : err==="daily_limit" ? "daily_limit" : res.status===429 ? "rate_limited" : res.status===413 ? "prompt_too_large" : err==="refused" ? "refused" : "upstream_error"};
+}
+function remoteEngine(code){
+  return { json: async (prompt) => { const d = await callWorker({code, prompt}); if(d.truncated) throw {code:"invalid_json"}; return parseJSON(d.text||""); } };
+}
+const storeCode = v => { try{ v ? localStorage.setItem("pdfstudy.code", v) : localStorage.removeItem("pdfstudy.code"); }catch(e){} };
+$("btnCode").onclick = async () => {
+  const code = $("accessCode").value.trim(); if(!code) return;
+  $("btnCode").disabled = true; setStatus("جارٍ التحقق من الرمز…");
+  try{ await callWorker({code, check:true}); storeCode(code); sample = remoteEngine(code); setEngine(true); setStatus("تم تفعيل التحليل الذكي."); }
+  catch(e){ setStatus(e.code==="bad_code" ? "رمز الدخول غير صحيح." : "تعذّر الاتصال بالخادم. حاول لاحقاً.", true); }
+  finally{ $("btnCode").disabled = false; }
+};
+$("accessCode").addEventListener("keydown", e => { if(e.key==="Enter") $("btnCode").click(); });
 const qButtons = ["btnAnalyze","btnMcq","btnTf","btnEssay"];
 function setBusy(b){ busy=b; qButtons.forEach(id=>$(id).disabled=b); }
-function dropClaude(e){ if(e?.code==="not_granted"||e?.code==="sampling_disabled"){ sample=null; setEngine(false); return true; } return false; }
+function dropClaude(e){
+  if(e?.code==="bad_code"){ storeCode(""); sample=null; setEngine(false); return true; }
+  if(e?.code==="not_granted"||e?.code==="sampling_disabled"){ sample=null; setEngine(false); return true; }
+  return false;
+}
 
 async function analyze(){
   if(busy) return;
@@ -647,10 +693,14 @@ ${text}`;
 $("btnAnalyze").onclick = analyze;
 ["btnMcq","btnTf","btnEssay"].forEach(id=>$(id).onclick=()=>makeQuestions($(id).dataset.type));
 
+let remoteMode = false;
 function setEngine(on){
   $("engDot").className = "dot"+(on?" on":"");
   $("engTxt").textContent = on ? "التحليل الذكي بواسطة Claude" : "التحليل المحلي";
-  $("engNote").textContent = on ? "يُرسل نص المستند إلى Claude عند الضغط على الأزرار، ويُحتسب من استخدام حسابك."
+  $("accessBox").hidden = !(remoteMode && !on);
+  $("engNote").textContent = on
+    ? (remoteMode ? "يُرسل نص المستند إلى Claude عند الضغط على الأزرار." : "يُرسل نص المستند إلى Claude عند الضغط على الأزرار، ويُحتسب من استخدام حسابك.")
+    : remoteMode ? "أدخل رمز الدخول لتفعيل التحليل الذكي. بدونه يعمل الموقع بتحليل محلي أبسط."
     : "Claude غير متاح هنا، لذلك يعمل الموقع بتحليل محلي أبسط: ملخص من جمل النص وأسئلة مبنية على كلماته المفتاحية.";
 }
 
@@ -658,6 +708,11 @@ renderAll();
 (async()=>{
   try{ sample = await window.claude?.use?.("sample") || null; }catch(e){ sample=null; }
   try{ downloads = await window.claude?.use?.("downloads") || null; }catch(e){ downloads=null; }
+  if(!sample && API_URL){
+    remoteMode = true;
+    let code = ""; try{ code = localStorage.getItem("pdfstudy.code") || ""; }catch(e){}
+    if(code) sample = remoteEngine(code);
+  }
   setEngine(!!sample); renderQuiz();
 })();
 })();
